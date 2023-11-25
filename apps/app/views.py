@@ -5,151 +5,112 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.app.filters import *
 from rest_framework import pagination
-from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.filters import SearchFilter
+from rest_framework import pagination, response
 
 
-class ClientPagination(pagination.PageNumberPagination):
+from rest_framework import viewsets, filters
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+
+
+
+class BasePagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 50
-    queryset = Client.objects.all()
-    filterset_class = Client
-    page_size_query_param = "page_size"
 
     def get_paginated_response(self, data):
-        return Response(
-            {
-                "page_size": self.page_size,
-                "total_objects": self.page.paginator.count,
-                "total_pages": self.page.paginator.num_pages,
-                "current_page_number": self.page.number,
-                "next": self.get_next_link(),
-                "previous": self.get_previous_link(),
-                "results": data,
-            }
-        )
+        return Response({
+            "page_size": self.page_size,
+            "total_objects": self.page.paginator.count,
+            "total_pages": self.page.paginator.num_pages,
+            "current_page_number": self.page.number,
+            "next": self.get_next_link(),
+            "previous": self.get_previous_link(),
+            "results": data,
+        })
+class CustomPaginationMixin:
+    pagination_class = BasePagination
 
-
-class IncomePagination(pagination.PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 50
-    queryset = Income.objects.all()
-    filterset_class = Income
-    page_size_query_param = "page_size"
-
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "page_size": self.page_size,
-                "total_objects": self.page.paginator.count,
-                "total_pages": self.page.paginator.num_pages,
-                "current_page_number": self.page.number,
-                "next": self.get_next_link(),
-                "previous": self.get_previous_link(),
-                "results": data,
-            }
-        )
-
-
-class OutcomePagination(pagination.PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 50
-    queryset = Income.objects.all()
-    filterset_class = Income
-    page_size_query_param = "page_size"
-
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "page_size": self.page_size,
-                "total_objects": self.page.paginator.count,
-                "total_pages": self.page.paginator.num_pages,
-                "current_page_number": self.page.number,
-                "next": self.get_next_link(),
-                "previous": self.get_previous_link(),
-                "results": data,
-            }
-        )
-
-
-class PaymentsPagination(pagination.PageNumberPagination):
-    page_size = 10
-    page_size_query_param = "page_size"
-    max_page_size = 50
-    queryset = Payments.objects.all()
-    filterset_class = Payments
-    page_size_query_param = "page_size"
-
-    def get_paginated_response(self, data):
-        return Response(
-            {
-                "page_size": self.page_size,
-                "total_objects": self.page.paginator.count,
-                "total_pages": self.page.paginator.num_pages,
-                "current_page_number": self.page.number,
-                "next": self.get_next_link(),
-                "previous": self.get_previous_link(),
-                "results": data,
-            }
-        )
-
-
-class ProTypeViewset(ModelViewSet):
+class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = ProductType.objects.all().order_by("-id")
     serializer_class = ProTypeSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = ProductTypeFilter 
+    search_fields = ['name','price'] 
+    filterset_fields = {'name__related_field': ['icontains']}
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+
+
+class FormatViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+    queryset = Format.objects.all().order_by("-id")
+    serializer_class = FormatSerializer
     search_fields = ["name"]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
-
-class ProductViewset(ModelViewSet):
+class ProductViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
     search_fields = ["name"]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
 
-class ClientViewset(ModelViewSet):
+class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = ClientPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("name", "passport", "phone")
     # filterset_fields = ('status', )
     filterset_class = ClientFilter
     serializer_class = ClientSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
 
-class OutcomeViewset(ModelViewSet):
+class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = OutcomePagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client", "product", "count", "price", "date",'check_id')
-    # filterset_fields = ('status', )
+    search_fields = ("count", "price", "date","check_id")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
 
-class IncomeViewset(ModelViewSet):
+class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = IncomePagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client", "product", "count", "price", "date")
-    # filterset_fields = ('status', )
+    search_fields = ("count", "price", "date")
     filterset_class = IncomeFilter
     serializer_class = IncomeSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
 
-class PaymentsViewset(ModelViewSet):
+class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Payments.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = IncomePagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client", "product", "count", "price", "date")
+    search_fields = ("count", "price", "date")
     # filterset_fields = ('status', )
     filterset_class = PaymentsFilter
     serializer_class = PaymentsSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset

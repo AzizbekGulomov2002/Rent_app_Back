@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from .models import *
 
+class FormatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Format
+        fields = ["id", "name",]
 
 class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:

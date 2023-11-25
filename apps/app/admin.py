@@ -1,10 +1,5 @@
 from django.contrib import admin
-
-# Register your models here.
-
-
-from .models import *
-
+from .models import (Product,ProductType,Client,Outcome,Income,Payments,Format)
 admin.site.register(ProductType)
 
 
@@ -14,22 +9,25 @@ class ClientAdmin(admin.ModelAdmin):
         "phone",
     ]
     list_per_page = 10
-
     class Meta:
         model = Client
-
-
 admin.site.register(Client, ClientAdmin)
 
+
+class FormatAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+    ]
+    list_per_page = 10
+    class Meta:
+        model = Format
+admin.site.register(Format, FormatAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ["name"]
     list_per_page = 10
-
     class Meta:
         model = Product
-
-
 admin.site.register(Product, ProductAdmin)
 
 

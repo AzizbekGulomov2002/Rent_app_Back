@@ -8,27 +8,24 @@ from django.db.models import Sum
 # Product class
 class Product(models.Model):
     name = models.CharField(max_length=200)
+    def __str__(self):
+        return f"{self.name}"
+    
 
+class Format(models.Model):
+    name = models.CharField(max_length=200)
     def __str__(self):
         return f"{self.name}"
 
 
 # Product Type class
 class ProductType(models.Model):
-    FORMAT = [
-        ("metr", "metr"),
-        ("sm", "sm"),
-        ("komplekt", "komplekt"),
-        ("dona", "dona"),
-    ]
     name = models.CharField(max_length=200)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    format = models.CharField(max_length=100, choices=FORMAT)
-    # diametr = models.CharField(max_length=200,null=True,blank=True)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
-
     def __str__(self):
-        return f"{self.product}"
+        return f"{self.name}"
 
 
 # Client class
@@ -36,7 +33,7 @@ class ProductType(models.Model):
 
 class Client(models.Model):
     name = models.CharField(max_length=200)
-    passport = models.CharField(max_length=9, null=True, blank=True)
+    passport = models.CharField(max_length=13, null=True, blank=True)
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
 
@@ -121,10 +118,16 @@ class Outcome(models.Model):
     price = models.PositiveBigIntegerField(null=True, blank=True)
     date = models.DateTimeField()
     check_id = models.IntegerField(default=1000)
-
-    @property
-    def check_id(self):
-        return self._check_id+1000
+    
+    def save(self, *args, **kwargs):
+        if not self.pk:  # If the object is being created for the first time
+            last_outcome = Outcome.objects.last()  # Get the last Outcome object
+            if last_outcome:
+                self.check_id = last_outcome.check_id + 1  # Increment check_id by 1 based on the last Outcome
+            else:
+                self.check_id = 1000  # If there are no existing Outcome objects, start with 1000
+            
+        super().save(*args, **kwargs)
 
     @property
     def total(self):

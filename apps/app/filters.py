@@ -9,7 +9,11 @@ class ProductFilter(filters.FilterSet):
         model = Product
         fields = ["name"]
 
-
+class FormatFilter(filters.FilterSet):
+    class Meta:
+        model = Format
+        fields = ["name"]
+        
 class ProductTypeFilter(filters.FilterSet):
     class Meta:
         model = ProductType
