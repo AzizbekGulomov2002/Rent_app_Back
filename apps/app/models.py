@@ -120,6 +120,11 @@ class Outcome(models.Model):
     count = models.FloatField()
     price = models.PositiveBigIntegerField(null=True, blank=True)
     date = models.DateTimeField()
+    check_id = models.IntegerField(default=1000)
+
+    @property
+    def check_id(self):
+        return self._check_id+1000
 
     @property
     def total(self):

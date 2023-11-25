@@ -127,7 +127,7 @@ class OutcomeViewset(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = OutcomePagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client", "product", "count", "price", "date")
+    search_fields = ("client", "product", "count", "price", "date",'check_id')
     # filterset_fields = ('status', )
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer

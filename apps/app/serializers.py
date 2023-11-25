@@ -33,6 +33,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "price",
             "date",
             "total",
+            "check_id"
         ]
         # depth=1
 

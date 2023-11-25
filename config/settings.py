@@ -91,10 +91,12 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 REST_FRAMEWORK = {
-    # "DEFAULT_RENDERER_CLASSES": (
-    #     "config.custom_renderers.CustomRenderer",
-    #     "rest_framework.renderers.JSONRenderer",
-    # ),
+    # This is for JSON
+
+    "DEFAULT_RENDERER_CLASSES": (
+        "config.custom_renderers.CustomRenderer",
+        "rest_framework.renderers.JSONRenderer",
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_authtoken.auth.AuthTokenAuthentication',
