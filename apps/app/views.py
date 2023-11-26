@@ -21,7 +21,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class BasePagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
-    max_page_size = 50
+    max_page_size = 50000
 
     def get_paginated_response(self, data):
         return Response({
@@ -49,21 +49,23 @@ class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 
 
-class FormatViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+class FormatViewset(ModelViewSet):
     queryset = Format.objects.all().order_by("-id")
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     serializer_class = FormatSerializer
+    filterset_class = FormatFilter
     search_fields = ["name"]
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
 
-class ProductViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+
+class ProductViewset(ModelViewSet):
     queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ProductFilter
     search_fields = ["name"]
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
+
 
 
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):

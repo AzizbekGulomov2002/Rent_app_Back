@@ -15,7 +15,7 @@ router.register("managers", ManagerViewset, basename="manager")
 router.register("users", UserViewset, basename="user")
 
 router.register("formats", FormatViewset, basename="formats")
-router.register("protypes", ProTypeViewset, basename="protype")
+router.register("all-protypes", ProTypeViewset, basename="protype")
 router.register("products", ProductViewset, basename="product")
 router.register("clients", ClientViewset, basename="client")
 router.register("outcomes", OutcomeViewset, basename="outcome")
