@@ -25,7 +25,7 @@ class ProductType(models.Model):
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} {self.product.name} {self.format.name}"
 
 
 # Client class

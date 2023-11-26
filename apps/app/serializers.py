@@ -10,6 +10,11 @@ class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ["id", "name", "product", "format", "price"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['product'] = instance.product.name if instance.product else None
+        representation['format'] = instance.format.name if instance.format else None
+        return representation
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -63,3 +68,8 @@ class PaymentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payments
         fields = ["id", "pay_type", "client", "product", "summa", "date"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['client'] = instance.client.name if instance.client else None
+        representation['product'] = instance.product.name if instance.product else None
+        return representation
