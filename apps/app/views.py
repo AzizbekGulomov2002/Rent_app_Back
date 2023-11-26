@@ -47,6 +47,14 @@ class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
         return queryset
 
+class AllProTypeViewset(ModelViewSet):
+    queryset = ProductType.objects.all().order_by("-id")
+    serializer_class = ProTypeSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = ProductTypeFilter 
+    search_fields = ['name','price'] 
+    filterset_fields = {'name__related_field': ['icontains']}
+
 
 
 class FormatViewset(ModelViewSet):
