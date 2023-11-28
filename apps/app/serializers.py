@@ -5,6 +5,11 @@ class FormatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Format
         fields = ["id", "name",]
+        
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["id", "name"]
 
 class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,15 +17,19 @@ class ProTypeSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "product", "format", "price"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['product'] = instance.product.name if instance.product else None
-        representation['format'] = instance.format.name if instance.format else None
+        product_instance = instance.product
+        if product_instance:
+            representation['product'] = ProductSerializer(product_instance).data
+        else:
+            representation['product'] = None
+        format_instance = instance.format
+        if format_instance:
+            representation['format'] = FormatSerializer(format_instance).data
+        else:
+            representation['format'] = None
         return representation
 
-
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ["id", "name"]
+    
 
 
 class ClientSerializer(serializers.ModelSerializer):

@@ -9,13 +9,13 @@ from django.db.models import Sum
 class Product(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.id} | {self.name}"
     
 
 class Format(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.id} | {self.name}"
 
 
 # Product Type class
@@ -24,10 +24,22 @@ class ProductType(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
+    
+    # @property
+    # def product_info(self):
+    #     return {
+    #         'id': self.product.id if self.product else None,
+    #         'name': self.product.name if self.product else None
+    #     }
+
+    # @property
+    # def format_info(self):
+    #     return {
+    #         'id': self.format.id if self.format else None,
+    #         'name': self.format.name if self.format else None
+    #     }
     def __str__(self):
-        return f"{self.name} {self.product.name} {self.format.name}"
-
-
+        return f"{self.name}"
 # Client class
 
 
