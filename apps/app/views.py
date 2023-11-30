@@ -37,23 +37,25 @@ class CustomPaginationMixin:
     pagination_class = BasePagination
 
 class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
-    queryset = ProductType.objects.all().order_by("-id")
+    queryset = ProductType.objects.all()
     serializer_class = ProTypeSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ProductTypeFilter 
-    search_fields = ['name','price','format'] 
-    filterset_fields = {'name__related_field': ['icontains']}
+    search_fields = ['name','format']
+    filterset_fields = ('price', 'name','format')
+    # search_fields = ['name','price','format'] 
+    # filterset_fields = {'name__related_field': ['icontains']}
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
 
 class AllProTypeViewset(ModelViewSet):
-    queryset = ProductType.objects.all().order_by("-id")
+    queryset = ProductType.objects.all()
     serializer_class = ProTypeSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ProductTypeFilter 
-    search_fields = ['name','price'] 
-    filterset_fields = {'name__related_field': ['icontains']}
+    search_fields = ['name','format']
+    filterset_fields = ('price', 'name','format')
 
 
 
@@ -66,7 +68,7 @@ class FormatViewset(ModelViewSet):
     search_fields = ["name"]
 
 
-class ProductViewset(ModelViewSet):
+class ProductViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -74,6 +76,9 @@ class ProductViewset(ModelViewSet):
     filterset_class = ProductFilter
     search_fields = ["name"]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
 
 
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
