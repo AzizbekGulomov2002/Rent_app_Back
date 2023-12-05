@@ -38,6 +38,7 @@ class CustomPaginationMixin:
 
 class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = ProductType.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # filterset_fields = ('price', 'name','format')
     queryset = ProductType.objects.all()
     serializer_class = ProTypeSerializer
@@ -50,6 +51,7 @@ class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class AllProTypeViewset(ModelViewSet):
     queryset = ProductType.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ProTypeSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ProductTypeFilter 
@@ -92,7 +94,7 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date","check_id")
     filterset_class = OutcomeFilter
@@ -104,7 +106,7 @@ class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by("-id")
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date")
     filterset_class = IncomeFilter
@@ -116,7 +118,7 @@ class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Payments.objects.all().order_by("-id")
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date")
     # filterset_fields = ('status', )
