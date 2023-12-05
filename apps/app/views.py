@@ -67,7 +67,7 @@ class FormatViewset(ModelViewSet):
     search_fields = ["name"]
 
 
-class ProductViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+class ProductViewset(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -75,9 +75,6 @@ class ProductViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     filterset_class = ProductFilter
     search_fields = ["name"]
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
 
 
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
@@ -95,7 +92,7 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date","check_id")
     filterset_class = OutcomeFilter
@@ -107,7 +104,7 @@ class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by("-id")
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date")
     filterset_class = IncomeFilter
@@ -119,7 +116,7 @@ class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Payments.objects.all().order_by("-id")
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ("count", "price", "date")
     # filterset_fields = ('status', )

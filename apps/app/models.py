@@ -24,25 +24,10 @@ class ProductType(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
-    
-    # @property
-    # def product_info(self):
-    #     return {
-    #         'id': self.product.id if self.product else None,
-    #         'name': self.product.name if self.product else None
-    #     }
-
-    # @property
-    # def format_info(self):
-    #     return {
-    #         'id': self.format.id if self.format else None,
-    #         'name': self.format.name if self.format else None
-    #     }
     def __str__(self):
         return f"{self.name}"
+    
 # Client class
-
-
 class Client(models.Model):
     name = models.CharField(max_length=200)
     passport = models.CharField(max_length=13, null=True, blank=True)
@@ -141,22 +126,14 @@ class Outcome(models.Model):
             
         super().save(*args, **kwargs)
 
-    @property
-    def total(self):
-        if self.price is not None and self.price > 0:
-            return self.price * self.count
-        elif self.product.price is not None:
-            return self.product.price * self.count
-        else:
-            return 0
-
-    @property
-    def client_name(self):
-        return self.client.name
-
-    @property
-    def product_name(self):
-        return self.product.name
+    # @property
+    # def total(self):
+    #     if self.price is not None and self.price > 0:
+    #         return self.price * self.count
+    #     elif self.product.price is not None:
+    #         return self.product.price * self.count
+    #     else:
+    #         return 0
 
     def __str__(self):
         return f"{self.client.name}, {self.product.name} - {self.count}"
@@ -170,13 +147,6 @@ class Income(models.Model):
     day = models.IntegerField()
     date = models.DateTimeField()
 
-    @property
-    def client_name(self):
-        return self.client.name
-
-    @property
-    def product_name(self):
-        return self.product.name
 
     @property
     def total(self):

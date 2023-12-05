@@ -44,16 +44,18 @@ class OutcomeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "client",
-            "client_name",
             "product",
-            "product_name",
             "count",
             "price",
             "date",
-            "total",
+            # "total",
             "check_id"
         ]
-        # depth=1
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['client'] = instance.client.name if instance.client else None
+        representation['product'] = instance.product.name if instance.product else None
+        return representation
 
 
 class IncomeSerializer(serializers.ModelSerializer):
@@ -62,15 +64,18 @@ class IncomeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "client",
-            "client_name",
             "product",
-            "product_name",
             "count",
             "income_price",
             "day",
             "date",
             "total",
         ]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['client'] = instance.client.name if instance.client else None
+        representation['product'] = instance.product.name if instance.product else None
+        return representation
 
 
 class PaymentsSerializer(serializers.ModelSerializer):
