@@ -32,11 +32,6 @@ class ProTypeSerializer(serializers.ModelSerializer):
     
 
 
-# class ClientSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Client
-#         fields = ["id", "name", "passport", "phone", "transactions", "desc", ]
-
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
