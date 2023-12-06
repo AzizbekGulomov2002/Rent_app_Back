@@ -37,70 +37,76 @@ class Client(models.Model):
     def transactions(self):
         outcomes = Outcome.objects.filter(client=self)
         incomes = Income.objects.filter(client=self)
-
         outcome_data = []
         income_data = []
+        # totals = {}
 
         # Process outcome transactions
         for outcome in outcomes:
             outcome_data.append(
                 {
                     "id": outcome.id,
-                    "client": outcome.client.id,
-                    "product": outcome.product.id,
+                    "client": {
+                        "id": outcome.client.id,
+                        "name": outcome.client.name,
+                    },
+                    "product": {
+                        "id": outcome.product.id,
+                        "name": outcome.product.name,
+                        "price": outcome.product.price  # Productning narxini chiqarish
+                    },
                     "count": outcome.count,
+                    "price": outcome.price,
                     "date": outcome.date,
-                    # "total": outcome.total,
                 }
             )
+
+            # Update totals with counts for outcome products
+            product_id = outcome.product.id
+            product_name = outcome.product.name
+            # if product_id not in totals:
+            #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
+            # totals[product_id]["counts_outcome"] += outcome.count
 
         # Process income transactions
         for income in incomes:
             income_data.append(
                 {
                     "id": income.id,
-                    "client": income.client.id,
-                    "product": income.product.id,
+                    "client": {
+                        "id": income.client.id,
+                        "name": income.client.name,
+                    },
+                    "product": {
+                        "id": income.product.id,
+                        "name": income.product.name,
+                        "price": income.product.price  # Productning narxini chiqarish
+                    },
                     "count": income.count,
                     "date": income.date,
-                    # "total": income.total,
+                    "total": income.total,
                 }
             )
 
-        totals = {}
+            # Update totals with counts for income products
+            product_id = income.product.id
+            product_name = income.product.name
+            # if product_id not in totals:
+            #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
+            # totals[product_id]["counts_income"] += income.count
 
-        # Update totals with counts for each product_name
-        # for product in outcome_data:
-        #     product_name = product["product_name"]
-        #     if product_name not in totals:
-        #         totals[product_name] = {
-        #             "counts_outcome": 0,  # Change total_outcomes to counts_outcome
-        #             "counts_income": 0,  # Change total_incomes to counts_income
-        #             "difference": 0,
-        #         }
-        #     totals[product_name]["counts_outcome"] += product.get("count", 0)
-
-        # for product in income_data:
-        #     product_name = product["product_name"]
-        #     if product_name not in totals:
-        #         totals[product_name] = {
-        #             "counts_outcome": 0,
-        #             "counts_income": 0,
-        #             "difference": 0,
-        #         }
-        #     totals[product_name]["counts_income"] += product.get("count", 0)
-
-        # for product_name in totals:
-        #     totals[product_name]["difference"] = (
-        #         totals[product_name]["counts_outcome"]
-        #         - totals[product_name]["counts_income"]
-        #     )
+        # Calculate the difference for each product
+        # for product_id, product_data in totals.items():
+        #     product_data["difference"] = product_data["counts_outcome"] - product_data["counts_income"]
+        #     del product_data["counts_outcome"]
+        #     del product_data["counts_income"]
 
         return {
             "outcomes": outcome_data,
             "incomes": income_data,
-            # "totals": totals,
+            # "totals": list(totals.values()),
         }
+
     def __str__(self):
         return f"{self.name}"
 
