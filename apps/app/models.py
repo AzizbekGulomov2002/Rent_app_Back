@@ -33,7 +33,76 @@ class Client(models.Model):
     passport = models.CharField(max_length=13, null=True, blank=True)
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
+    @property
+    def transactions(self):
+        outcomes = Outcome.objects.filter(client=self)
+        incomes = Income.objects.filter(client=self)
 
+        outcome_data = []
+        income_data = []
+
+        # Process outcome transactions
+        for outcome in outcomes:
+            outcome_data.append(
+                {
+                    "id": outcome.id,
+                    "product": outcome.client.id,
+                    "product": outcome.product.id,
+                    "count": outcome.count,
+                    "date": outcome.date,
+                    # "total": outcome.total,
+                }
+            )
+
+        # Process income transactions
+        for income in incomes:
+            income_data.append(
+                {
+                    "id": income.id,
+                    "product": income.client.id,
+                    "product": income.product.id,
+                    "count": income.count,
+                    "date": income.date,
+                    # "total": income.total,
+                }
+            )
+
+        totals = {}
+
+        # Update totals with counts for each product_name
+        # for product in outcome_data:
+        #     product_name = product["product_name"]
+        #     if product_name not in totals:
+        #         totals[product_name] = {
+        #             "counts_outcome": 0,  # Change total_outcomes to counts_outcome
+        #             "counts_income": 0,  # Change total_incomes to counts_income
+        #             "difference": 0,
+        #         }
+        #     totals[product_name]["counts_outcome"] += product.get("count", 0)
+
+        # for product in income_data:
+        #     product_name = product["product_name"]
+        #     if product_name not in totals:
+        #         totals[product_name] = {
+        #             "counts_outcome": 0,
+        #             "counts_income": 0,
+        #             "difference": 0,
+        #         }
+        #     totals[product_name]["counts_income"] += product.get("count", 0)
+
+        # for product_name in totals:
+        #     totals[product_name]["difference"] = (
+        #         totals[product_name]["counts_outcome"]
+        #         - totals[product_name]["counts_income"]
+        #     )
+
+        return {
+            "outcomes": outcome_data,
+            "incomes": income_data,
+            # "totals": totals,
+        }
+    def __str__(self):
+        return f"{self.name}"
 
 # Outcome class
 
