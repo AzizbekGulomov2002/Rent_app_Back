@@ -47,10 +47,10 @@ class Client(models.Model):
             outcome_data.append(
                 {
                     "id": outcome.id,
-                    "product_name": outcome.product,
+                    "product_name": outcome.product.name,
                     "count": outcome.count,
                     "date": outcome.date,
-                    # "total": outcome.total,
+                    "total": outcome.count * outcome.price if outcome.price else 0,
                 }
             )
 
@@ -59,7 +59,7 @@ class Client(models.Model):
             income_data.append(
                 {
                     "id": income.id,
-                    "product_name": income.product,
+                    "product_name": income.product.name,
                     "count": income.count,
                     "date": income.date,
                     "total": income.total,
@@ -68,17 +68,18 @@ class Client(models.Model):
 
         totals = {}
 
-        # Update totals with counts for each product_name
+        # Update totals with counts for each product_name in outcomes
         for product in outcome_data:
             product_name = product["product_name"]
             if product_name not in totals:
                 totals[product_name] = {
-                    "counts_outcome": 0,  # Change total_outcomes to counts_outcome
-                    "counts_income": 0,  # Change total_incomes to counts_income
+                    "counts_outcome": 0,
+                    "counts_income": 0,
                     "difference": 0,
                 }
             totals[product_name]["counts_outcome"] += product.get("count", 0)
 
+        # Update totals with counts for each product_name in incomes
         for product in income_data:
             product_name = product["product_name"]
             if product_name not in totals:
@@ -89,6 +90,7 @@ class Client(models.Model):
                 }
             totals[product_name]["counts_income"] += product.get("count", 0)
 
+        # Calculate the difference between outcome and income counts for each product_name
         for product_name in totals:
             totals[product_name]["difference"] = (
                 totals[product_name]["counts_outcome"]
@@ -100,6 +102,7 @@ class Client(models.Model):
             "incomes": income_data,
             "totals": totals,
         }
+
 
     def __str__(self):
         return f"{self.name}"
@@ -126,14 +129,6 @@ class Outcome(models.Model):
             
         super().save(*args, **kwargs)
 
-    # @property
-    # def total(self):
-    #     if self.price is not None and self.price > 0:
-    #         return self.price * self.count
-    #     elif self.product.price is not None:
-    #         return self.product.price * self.count
-    #     else:
-    #         return 0
 
     def __str__(self):
         return f"{self.client.name}, {self.product.name} - {self.count}"
