@@ -40,7 +40,7 @@ class Client(models.Model):
         incomes = Income.objects.filter(client=self)
         outcome_data = []
         income_data = []
-        totals = {}
+        # totals = {}
 
         # Process outcome transactions
         for outcome in outcomes:
@@ -53,6 +53,7 @@ class Client(models.Model):
                         "price": outcome.product.price  # Productning narxini chiqarish
                     },
                     "count": outcome.count,
+                    "count": outcome.price,
                     "date": outcome.date,
                 }
             )
