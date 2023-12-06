@@ -47,7 +47,11 @@ class Client(models.Model):
             outcome_data.append(
                 {
                     "id": outcome.id,
-                    "product": {"id": outcome.product.id, "name": outcome.product.name},
+                    "product": {
+                        "id": outcome.product.id,
+                        "name": outcome.product.name,
+                        "price": outcome.product.price  # Productning narxini chiqarish
+                    },
                     "count": outcome.count,
                     "date": outcome.date,
                 }
@@ -65,9 +69,14 @@ class Client(models.Model):
             income_data.append(
                 {
                     "id": income.id,
-                    "product": {"id": income.product.id, "name": income.product.name},
+                    "product": {
+                        "id": income.product.id,
+                        "name": income.product.name,
+                        "price": income.product.price  # Productning narxini chiqarish
+                    },
                     "count": income.count,
                     "date": income.date,
+                    "total": income.total,
                 }
             )
 
@@ -81,14 +90,15 @@ class Client(models.Model):
         # Calculate the difference for each product
         for product_id, product_data in totals.items():
             product_data["difference"] = product_data["counts_outcome"] - product_data["counts_income"]
-            del product_data["counts_outcome"]  # O'zgartirish
-            del product_data["counts_income"]  # O'zgartirish
+            del product_data["counts_outcome"]
+            del product_data["counts_income"]
 
         return {
             "outcomes": outcome_data,
             "incomes": income_data,
             "totals": list(totals.values()),
         }
+
 
 
 
