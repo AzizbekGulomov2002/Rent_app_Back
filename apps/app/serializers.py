@@ -40,6 +40,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class OutcomeSerializer(serializers.ModelSerializer):
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
     class Meta:
         model = Outcome
         fields = [
