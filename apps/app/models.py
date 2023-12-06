@@ -47,7 +47,7 @@ class Client(models.Model):
             outcome_data.append(
                 {
                     "id": outcome.id,
-                    "product_name": outcome.product_name,
+                    "product_name": outcome.product,
                     "count": outcome.count,
                     "date": outcome.date,
                     "total": outcome.total,
@@ -59,7 +59,7 @@ class Client(models.Model):
             income_data.append(
                 {
                     "id": income.id,
-                    "product_name": income.product_name,
+                    "product_name": income.product,
                     "count": income.count,
                     "date": income.date,
                     "total": income.total,
