@@ -35,60 +35,60 @@ class Client(models.Model):
     desc = models.TextField(null=True, blank=True)
 
     @property
-def transactions(self):
-    outcomes = Outcome.objects.filter(client=self)
-    incomes = Income.objects.filter(client=self)
-    outcome_data = []
-    income_data = []
+    def transactions(self):
+        outcomes = Outcome.objects.filter(client=self)
+        incomes = Income.objects.filter(client=self)
+        outcome_data = []
+        income_data = []
 
 
-    # Process outcome transactions
-    for outcome in outcomes:
-        outcome_data.append(
-            {
-                "id": outcome.id,
-                "product": {"id": outcome.product.id, "name": outcome.product.name},
-                "count": outcome.count,
-                "date": outcome.date,
-            }
-        )
+        # Process outcome transactions
+        for outcome in outcomes:
+            outcome_data.append(
+                {
+                    "id": outcome.id,
+                    "product": {"id": outcome.product.id, "name": outcome.product.name},
+                    "count": outcome.count,
+                    "date": outcome.date,
+                }
+            )
 
-        # Update totals with counts for outcome products
-        product_id = outcome.product.id
-        product_name = outcome.product.name
-        if product_id not in totals:
-            totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
-        totals[product_id]["counts_outcome"] += outcome.count
+            # Update totals with counts for outcome products
+            product_id = outcome.product.id
+            product_name = outcome.product.name
+            if product_id not in totals:
+                totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
+            totals[product_id]["counts_outcome"] += outcome.count
 
-    # Process income transactions
-    for income in incomes:
-        income_data.append(
-            {
-                "id": income.id,
-                "product": {"id": income.product.id, "name": income.product.name},
-                "count": income.count,
-                "date": income.date,
-            }
-        )
+        # Process income transactions
+        for income in incomes:
+            income_data.append(
+                {
+                    "id": income.id,
+                    "product": {"id": income.product.id, "name": income.product.name},
+                    "count": income.count,
+                    "date": income.date,
+                }
+            )
 
-        # Update totals with counts for income products
-        product_id = income.product.id
-        product_name = income.product.name
-        if product_id not in totals:
-            totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
-        totals[product_id]["counts_income"] += income.count
+            # Update totals with counts for income products
+            product_id = income.product.id
+            product_name = income.product.name
+            if product_id not in totals:
+                totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
+            totals[product_id]["counts_income"] += income.count
 
-    # Calculate the difference for each product
-    for product_id, product_data in totals.items():
-        product_data["difference"] = product_data["counts_outcome"] - product_data["counts_income"]
-        del product_data["counts_outcome"]  # O'zgartirish
-        del product_data["counts_income"]  # O'zgartirish
+        # Calculate the difference for each product
+        for product_id, product_data in totals.items():
+            product_data["difference"] = product_data["counts_outcome"] - product_data["counts_income"]
+            del product_data["counts_outcome"]  # O'zgartirish
+            del product_data["counts_income"]  # O'zgartirish
 
-    return {
-        "outcomes": outcome_data,
-        "incomes": income_data,
-        
-    }
+        return {
+            "outcomes": outcome_data,
+            "incomes": income_data,
+            
+        }
 
 
 
