@@ -38,14 +38,10 @@ class ProTypeSerializer(serializers.ModelSerializer):
 #         fields = ["id", "name", "passport", "phone", "transactions", "desc", ]
 
 class ClientSerializer(serializers.ModelSerializer):
-    transactions = serializers.SerializerMethodField()  # Add this line
-
     class Meta:
         model = Client
         fields = ["id", "name", "passport", "phone", "transactions", "desc"]
-    
-    def get_transactions(self, obj):  # Ensure the method name is get_transactions
-        return obj.transactions
+
 
 
 class OutcomeSerializer(serializers.ModelSerializer):
