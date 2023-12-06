@@ -50,7 +50,7 @@ class Client(models.Model):
                     "product_name": outcome.product,
                     "count": outcome.count,
                     "date": outcome.date,
-                    "total": outcome.total,
+                    # "total": outcome.total,
                 }
             )
 
