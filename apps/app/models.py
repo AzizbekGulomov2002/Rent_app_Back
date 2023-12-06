@@ -40,7 +40,7 @@ class Client(models.Model):
         incomes = Income.objects.filter(client=self)
         outcome_data = []
         income_data = []
-
+        totals = {}
 
         # Process outcome transactions
         for outcome in outcomes:
@@ -87,7 +87,7 @@ class Client(models.Model):
         return {
             "outcomes": outcome_data,
             "incomes": income_data,
-            
+            "totals": list(totals.values()),
         }
 
 
