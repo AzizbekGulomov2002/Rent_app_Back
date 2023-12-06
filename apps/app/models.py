@@ -34,49 +34,6 @@ class Client(models.Model):
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
 
-    @property
-    def transactions(self):
-        outcomes = Outcome.objects.filter(client=self)
-        incomes = Income.objects.filter(client=self)
-        outcome_data = []
-        income_data = []
-
-        # Process outcome transactions
-        for outcome in outcomes:
-            outcome_data.append(
-                {
-                    "id": outcome.id,
-                    "client": outcome.client.id,
-                    "product": outcome.product.id,
-                    "count": outcome.count,
-                    "price": outcome.price,
-                    "date": outcome.date,
-                }
-            )
-
-        # Process income transactions
-        for income in incomes:
-            income_data.append(
-                {
-                    "id": income.id,
-                    "client": income.client.id,
-                    "product": income.product.id,
-                    "count": income.count,
-                    "date": income.date,
-                }
-            )
-
-        return {
-            "outcomes": outcome_data,
-            "incomes": income_data,
-        }
-
-
-
-
-    def __str__(self):
-        return f"{self.name}"
-
 
 # Outcome class
 
