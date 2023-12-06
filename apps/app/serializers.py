@@ -54,8 +54,8 @@ class OutcomeSerializer(serializers.ModelSerializer):
         ]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['client'] = instance.client.name if instance.client else None
-        representation['product'] = instance.product.name if instance.product else None
+        representation['client'] = instance.client.id if instance.client else None
+        representation['product'] = instance.product.id if instance.product else None
         return representation
 
 
