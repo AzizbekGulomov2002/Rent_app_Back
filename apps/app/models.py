@@ -46,7 +46,7 @@ class Client(models.Model):
             outcome_data.append(
                 {
                     "id": outcome.id,
-                    "product": outcome.client.id,
+                    "client": outcome.client.id,
                     "product": outcome.product.id,
                     "count": outcome.count,
                     "date": outcome.date,
@@ -59,7 +59,7 @@ class Client(models.Model):
             income_data.append(
                 {
                     "id": income.id,
-                    "product": income.client.id,
+                    "client": income.client.id,
                     "product": income.product.id,
                     "count": income.count,
                     "date": income.date,
@@ -103,9 +103,6 @@ class Client(models.Model):
         }
     def __str__(self):
         return f"{self.name}"
-
-# Outcome class
-
 
 class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
