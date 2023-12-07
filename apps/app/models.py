@@ -114,7 +114,7 @@ class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     count = models.FloatField()
-    price = models.PositiveBigIntegerField(null=True, blank=True)
+    price = models.PositiveBigIntegerField()
     date = models.DateTimeField()
     check_id = models.IntegerField(default=1000)
     
