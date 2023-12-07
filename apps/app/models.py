@@ -49,7 +49,9 @@ class Client(models.Model):
                 "id": outcome.id,
                 "date": outcome.date,
                 "protype": outcome.protype.name,
-                "total_outcome_count": outcome.outcome_count,
+                "outcome_count": outcome.outcome_count,
+                "income_count": total_income_count,  # Yangi qo'shim
+                "difference": difference  # Agar kerak bo'lsa
             })
 
         for income in incomes:
