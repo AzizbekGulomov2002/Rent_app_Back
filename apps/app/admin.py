@@ -33,7 +33,7 @@ admin.site.register(Product, ProductAdmin)
 
 class OutcomeInline(admin.TabularInline):
     model = Outcome
-    fields = ["client", "product", "count", "date"]
+    fields = ["client", "product", "outcome_count", "date"]
 
 
 admin.site.register(Outcome)
@@ -41,9 +41,7 @@ admin.site.register(Outcome)
 
 class IncomeInline(admin.TabularInline):
     model = Income
-    fields = ["client", "product", "count", "day", "date"]
-
-
+    fields = ["outcome","count", "day", "date"]
 admin.site.register(Income)
 
 

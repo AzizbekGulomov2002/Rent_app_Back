@@ -33,79 +33,48 @@ class Client(models.Model):
     passport = models.CharField(max_length=13, null=True, blank=True)
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
+    
     @property
-    def transactions(self):
+    def tranzactions(self):
         outcomes = Outcome.objects.filter(client=self)
-        incomes = Income.objects.filter(client=self)
+        incomes = Income.objects.filter(outcome__client=self)
         outcome_data = []
         income_data = []
-        # totals = {}
 
-        # Process outcome transactions
         for outcome in outcomes:
-            outcome_data.append(
-                {
-                    "id": outcome.id,
-                    "client": {
-                        "id": outcome.client.id,
-                        "name": outcome.client.name,
-                    },
-                    "protype": {
-                        "id": outcome.protype.id,
-                        "name": outcome.protype.name,
-                        "price": outcome.protype.price  # Productning narxini chiqarish
-                    },
-                    "count": outcome.count,
-                    "price": outcome.price,
-                    "date": outcome.date,
-                }
-            )
+            total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
+            difference = outcome.outcome_count - total_income_count
 
-            # Update totals with counts for outcome products
-            # protype_id = outcome.product.id
-            # protype_name = outcome.product.name
-            # if product_id not in totals:
-            #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
-            # totals[product_id]["counts_outcome"] += outcome.count
+            outcome_data.append({
+                "id": outcome.id,
+                "date": outcome.date,
+                "protype": outcome.protype.name,
+                "total_outcome_count": outcome.outcome_count,
+            })
 
-        # Process income transactions
         for income in incomes:
-            income_data.append(
-                {
-                    "id": income.id,
-                    "client": {
-                        "id": income.client.id,
-                        "name": income.client.name,
-                    },
-                    "protype": {
-                        "id": income.protype.id,
-                        "name": income.protype.name,
-                        "price": income.protype.price  # Productning narxini chiqarish
-                    },
-                    "count": income.count,
-                    "date": income.date,
-                    "total": income.total,
-                }
-            )
+            related_outcome = Outcome.objects.get(id=income.outcome_id)
+            outcome_info = {
+                "id": related_outcome.id,
+                "date": related_outcome.date,
+                "protype": related_outcome.protype.name,
+                "outcome_count": related_outcome.outcome_count,
+            }
 
-            # Update totals with counts for income products
-            # protype_id = income.product.id
-            # protype_name = income.product.name
-            # if product_id not in totals:
-            #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
-            # totals[product_id]["counts_income"] += income.count
-
-        # Calculate the difference for each product
-        # for product_id, product_data in totals.items():
-        #     product_data["difference"] = product_data["counts_outcome"] - product_data["counts_income"]
-        #     del product_data["counts_outcome"]
-        #     del product_data["counts_income"]
+            income_data.append({
+                "id": income.id,
+                "date": income.date,
+                "protype": income.outcome.protype.name,
+                "income_count": income.income_count,
+                "outcome": outcome_info
+            })
 
         return {
-            "outcomes": outcome_data,
-            "incomes": income_data,
-            # "totals": list(totals.values()),
+            "outcome_data": outcome_data,
+            "income_data": income_data
         }
+    
+    
 
     def __str__(self):
         return f"{self.name}"
@@ -113,46 +82,36 @@ class Client(models.Model):
 class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    count = models.FloatField()
+    outcome_count = models.FloatField()
     price = models.PositiveBigIntegerField()
     date = models.DateTimeField()
     check_id = models.IntegerField(default=1000)
     
     def save(self, *args, **kwargs):
-        if not self.pk:  # If the object is being created for the first time
-            last_outcome = Outcome.objects.last()  # Get the last Outcome object
+        if not self.pk:
+            last_outcome = Outcome.objects.last()
             if last_outcome:
-                self.check_id = last_outcome.check_id + 1  # Increment check_id by 1 based on the last Outcome
+                self.check_id = last_outcome.check_id + 1
             else:
-                self.check_id = 1000  # If there are no existing Outcome objects, start with 1000
-            
+                self.check_id = 1000 
         super().save(*args, **kwargs)
 
-
+    
+    
     def __str__(self):
-        return f"{self.client.name}, {self.protype.name} - {self.count}"
+        return f"{self.client.name}, {self.protype.name} - {self.outcome_count}"
 
 
 class Income(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    count = models.PositiveBigIntegerField()
-    income_price = models.PositiveBigIntegerField(null=True, blank=True)
+    outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
+    income_count = models.PositiveBigIntegerField()
     day = models.IntegerField()
     date = models.DateTimeField()
 
 
-    @property
-    def total(self):
-        if self.income_price is not None and self.pay > 0:
-            return self.income_price * self.count
-        elif self.product.price is not None:
-            return self.product.price * self.count
-        else:
-            return 0
 
     def __str__(self):
-        return f"{self.client.name}, {self.product.name} - {self.count}"
+        return f"{self.outcome.client.name} - {self.income_count}"
 
 
 class Payments(models.Model):

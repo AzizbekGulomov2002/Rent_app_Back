@@ -29,13 +29,13 @@ class ClientFilter(filters.FilterSet):
 class OutcomeFilter(filters.FilterSet):
     class Meta:
         model = Outcome
-        fields = ["protype", "date"]
+        fields = ["client","protype", "date"]
 
 
 class IncomeFilter(filters.FilterSet):
     class Meta:
         model = Income
-        fields = ["product", "date"]
+        fields = ["outcome", "date"]
 
 
 class PaymentsFilter(filters.FilterSet):

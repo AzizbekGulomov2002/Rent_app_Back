@@ -40,7 +40,7 @@ class ProTypeSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ["id", "name", "passport", "phone", "transactions", "desc"]
+        fields = ["id", "name", "passport", "phone","tranzactions", "desc"]
 
 
 
@@ -52,10 +52,11 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "id",
             "client",
             "protype",
-            "count",
+            "outcome_count",
             "price",
             "date",
-            # "total",
+            # "total_incomes",
+            # "difference",
             "check_id"
         ]
     def to_representation(self, instance):
@@ -63,33 +64,23 @@ class OutcomeSerializer(serializers.ModelSerializer):
         representation['protype'] = ProTypeSerializer(instance=instance.protype).data
         return representation
 
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['protype'] = instance.protype.id if instance.protype else None
-    #     representation['name'] = instance.protype.name if instance.protype else None
-    #     representation['price'] = instance.protype.price if instance.protype else None
-    #     # representation['format'] = instance.format.name if instance.format else None
-    #     return representation
-
 
 class IncomeSerializer(serializers.ModelSerializer):
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
     class Meta:
         model = Income
         fields = [
             "id",
-            "client",
-            "product",
-            "count",
-            "income_price",
+            "outcome",
+            "income_count",
             "day",
             "date",
-            "total",
         ]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['client'] = instance.client.name if instance.client else None
-        representation['product'] = instance.product.name if instance.product else None
+        representation['outcome'] = OutcomeSerializer(instance=instance.outcome).data
         return representation
+
 
 
 class PaymentsSerializer(serializers.ModelSerializer):

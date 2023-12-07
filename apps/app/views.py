@@ -92,23 +92,23 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         return queryset
 
 
-class OutcomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+class OutcomeViewset(ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("count", "price", "date","check_id")
+    search_fields = ("client","outcome_count", "price", "date","check_id")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset
 
 
 class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("count", "price", "date")
+    search_fields = ("income_count","date")
     filterset_class = IncomeFilter
     serializer_class = IncomeSerializer
     def get_queryset(self):
