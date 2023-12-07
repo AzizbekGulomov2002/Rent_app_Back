@@ -29,7 +29,7 @@ class ClientFilter(filters.FilterSet):
 class OutcomeFilter(filters.FilterSet):
     class Meta:
         model = Outcome
-        fields = ["product", "date"]
+        fields = ["protype", "date"]
 
 
 class IncomeFilter(filters.FilterSet):

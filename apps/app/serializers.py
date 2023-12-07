@@ -15,18 +15,23 @@ class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ["id", "name", "product", "format", "price"]
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     product_instance = instance.product
+    #     if product_instance:
+    #         representation['product'] = ProductSerializer(product_instance).data
+    #     else:
+    #         representation['product'] = None
+    #     format_instance = instance.format
+    #     if format_instance:
+    #         representation['format'] = FormatSerializer(format_instance).data
+    #     else:
+    #         representation['format'] = None
+    #     return representation
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        product_instance = instance.product
-        if product_instance:
-            representation['product'] = ProductSerializer(product_instance).data
-        else:
-            representation['product'] = None
-        format_instance = instance.format
-        if format_instance:
-            representation['format'] = FormatSerializer(format_instance).data
-        else:
-            representation['format'] = None
+        representation['product'] = ProductSerializer(instance=instance.product).data
+        representation['format'] = FormatSerializer(instance=instance.format).data
         return representation
 
     
@@ -46,7 +51,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "client",
-            "product",
+            "protype",
             "count",
             "price",
             "date",
@@ -55,9 +60,16 @@ class OutcomeSerializer(serializers.ModelSerializer):
         ]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['client'] = instance.client.id if instance.client else None
-        representation['product'] = instance.product.id if instance.product else None
+        representation['protype'] = ProTypeSerializer(instance=instance.protype).data
         return representation
+
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     representation['protype'] = instance.protype.id if instance.protype else None
+    #     representation['name'] = instance.protype.name if instance.protype else None
+    #     representation['price'] = instance.protype.price if instance.protype else None
+    #     # representation['format'] = instance.format.name if instance.format else None
+    #     return representation
 
 
 class IncomeSerializer(serializers.ModelSerializer):

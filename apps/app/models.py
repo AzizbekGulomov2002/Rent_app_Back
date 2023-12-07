@@ -112,7 +112,7 @@ class Client(models.Model):
 
 class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
+    protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     count = models.FloatField()
     price = models.PositiveBigIntegerField()
     date = models.DateTimeField()
@@ -130,7 +130,7 @@ class Outcome(models.Model):
 
 
     def __str__(self):
-        return f"{self.client.name}, {self.product.name} - {self.count}"
+        return f"{self.client.name}, {self.protype.name} - {self.count}"
 
 
 class Income(models.Model):
