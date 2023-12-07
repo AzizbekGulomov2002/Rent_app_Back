@@ -50,10 +50,10 @@ class Client(models.Model):
                         "id": outcome.client.id,
                         "name": outcome.client.name,
                     },
-                    "product": {
-                        "id": outcome.product.id,
-                        "name": outcome.product.name,
-                        "price": outcome.product.price  # Productning narxini chiqarish
+                    "protype": {
+                        "id": outcome.protype.id,
+                        "name": outcome.protype.name,
+                        "price": outcome.protype.price  # Productning narxini chiqarish
                     },
                     "count": outcome.count,
                     "price": outcome.price,
@@ -62,8 +62,8 @@ class Client(models.Model):
             )
 
             # Update totals with counts for outcome products
-            product_id = outcome.product.id
-            product_name = outcome.product.name
+            # protype_id = outcome.product.id
+            # protype_name = outcome.product.name
             # if product_id not in totals:
             #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
             # totals[product_id]["counts_outcome"] += outcome.count
@@ -77,10 +77,10 @@ class Client(models.Model):
                         "id": income.client.id,
                         "name": income.client.name,
                     },
-                    "product": {
-                        "id": income.product.id,
-                        "name": income.product.name,
-                        "price": income.product.price  # Productning narxini chiqarish
+                    "protype": {
+                        "id": income.protype.id,
+                        "name": income.protype.name,
+                        "price": income.protype.price  # Productning narxini chiqarish
                     },
                     "count": income.count,
                     "date": income.date,
@@ -89,8 +89,8 @@ class Client(models.Model):
             )
 
             # Update totals with counts for income products
-            product_id = income.product.id
-            product_name = income.product.name
+            # protype_id = income.product.id
+            # protype_name = income.product.name
             # if product_id not in totals:
             #     totals[product_id] = {"id": product_id, "name": product_name, "counts_outcome": 0, "counts_income": 0}
             # totals[product_id]["counts_income"] += income.count
