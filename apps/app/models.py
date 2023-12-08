@@ -58,6 +58,7 @@ class Client(models.Model):
                 "date": outcome.date,
                 "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
+                "outcome_price": outcome.price,
                 "income_count": total_income_count,
                 "difference": difference,
                 "protype": protype,  # ProductType ma'lumotlari
@@ -70,6 +71,7 @@ class Client(models.Model):
                 "date": related_outcome.date,
                 "protype": related_outcome.protype.name,
                 "outcome_count": related_outcome.outcome_count,
+                "outcome_price": related_outcome.price,
                 "protype": {
                     "id": related_outcome.protype.id,
                     "name": related_outcome.protype.name,
