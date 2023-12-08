@@ -44,14 +44,23 @@ class Client(models.Model):
         for outcome in outcomes:
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
             difference = outcome.outcome_count - total_income_count
+            
+            # ProductType ma'lumotlarini olish
+            protype = {
+                "id": outcome.protype.id,
+                "name": outcome.protype.name,
+                "price": outcome.protype.price,
+                "format": outcome.protype.format.name
+            }
 
             outcome_data.append({
                 "id": outcome.id,
                 "date": outcome.date,
                 "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
-                "income_count": total_income_count,  # Yangi qo'shim
-                "difference": difference  # Agar kerak bo'lsa
+                "income_count": total_income_count,
+                "difference": difference,
+                "protype": protype,  # ProductType ma'lumotlari
             })
 
         for income in incomes:
@@ -61,6 +70,12 @@ class Client(models.Model):
                 "date": related_outcome.date,
                 "protype": related_outcome.protype.name,
                 "outcome_count": related_outcome.outcome_count,
+                "protype": {
+                    "id": related_outcome.protype.id,
+                    "name": related_outcome.protype.name,
+                    "price": related_outcome.protype.price,
+                    "format": related_outcome.protype.format.name
+                }
             }
 
             income_data.append({
@@ -75,7 +90,7 @@ class Client(models.Model):
             "outcome_data": outcome_data,
             "income_data": income_data
         }
-    
+        
     
 
     def __str__(self):
