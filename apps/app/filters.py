@@ -41,4 +41,4 @@ class IncomeFilter(filters.FilterSet):
 class PaymentsFilter(filters.FilterSet):
     class Meta:
         model = Payments
-        fields = ["pay_type", "product", "date"]
+        fields = ["client", "payment_date"]
