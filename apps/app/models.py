@@ -90,6 +90,7 @@ class Client(models.Model):
                 "day": income.day,
                 "income_count": income.income_count,
                 "income_summa": income.income_summa,
+                "total_income_summa": income.total_income_summa,
                 "outcome": outcome_info
             })
 
@@ -145,6 +146,12 @@ class Income(models.Model):
     @property
     def income_summa(self):
         return self.outcome.total_daily_price*self.day
+    
+    @property
+    def total_income_summa(cls):
+        all_incomes = cls.objects.all()
+        total_sum = sum(income.income_summa for income in all_incomes)
+        return total_sum
 
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
