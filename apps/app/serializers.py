@@ -29,7 +29,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class OutcomeSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
+    outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     class Meta:
         model = Outcome
         fields = [
@@ -38,8 +38,8 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "protype",
             "outcome_count",
             "outcome_price",
-            "date",
-            "total",
+            "outcome_date",
+            # "total",
             "check_id"
         ]
 
@@ -55,7 +55,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
 
 
 class IncomeSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
+    income_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     class Meta:
         model = Income
         fields = [
@@ -63,7 +63,7 @@ class IncomeSerializer(serializers.ModelSerializer):
             "outcome",
             "income_count",
             "day",
-            "date",
+            "income_date",
         ]
     def to_representation(self, instance):
         representation = super().to_representation(instance)

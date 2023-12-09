@@ -99,7 +99,7 @@ class Outcome(models.Model):
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     outcome_count = models.FloatField()
     outcome_price = models.PositiveBigIntegerField()
-    date = models.DateTimeField()
+    outcome_date = models.DateTimeField()
     check_id = models.IntegerField(default=1000)
     
     @property
@@ -131,7 +131,7 @@ class Income(models.Model):
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     income_count = models.PositiveBigIntegerField()
     day = models.IntegerField()
-    date = models.DateTimeField()
+    income_date = models.DateTimeField()
 
 
 
