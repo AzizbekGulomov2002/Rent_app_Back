@@ -27,9 +27,11 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = ["id", "name", "passport", "phone","tranzactions", "desc"]
 
-
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
+    income_count = serializers.SerializerMethodField()
+    difference = serializers.SerializerMethodField()
+
     class Meta:
         model = Outcome
         fields = [
@@ -39,7 +41,8 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "outcome_count",
             "outcome_price",
             "outcome_date",
-            # "total",
+            "income_count",
+            "difference",
             "check_id"
         ]
 
@@ -52,6 +55,16 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "format": protype_instance.format.name
         }
         return representation
+
+    def get_income_count(self, instance):
+        incomes = Income.objects.filter(outcome=instance)
+        total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
+        return total_income_count
+
+    def get_difference(self, instance):
+        incomes = Income.objects.filter(outcome=instance)
+        total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
+        return instance.outcome_count - total_income_count
 
 
 class IncomeSerializer(serializers.ModelSerializer):
