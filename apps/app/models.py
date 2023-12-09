@@ -102,7 +102,7 @@ class Client(models.Model):
             # Loop through Payment objects
             payments_data.append({
                 "id": payment.id,
-                "payments_summa": payment.summa,
+                "payment_summa": payment.summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
             })
         total_payment = sum(payment.summa for payment in payments)
