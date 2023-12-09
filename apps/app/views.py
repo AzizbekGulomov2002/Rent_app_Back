@@ -94,9 +94,9 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 class OutcomeViewset(ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client","outcome_count", "price", "date","check_id")
+    search_fields = ("client","outcome_count", "outcome_price", "date","check_id")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
     # def get_queryset(self):

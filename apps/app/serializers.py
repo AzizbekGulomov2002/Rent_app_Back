@@ -45,7 +45,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class OutcomeSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
+    # date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
     class Meta:
         model = Outcome
         fields = [
@@ -53,10 +53,8 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "client",
             "protype",
             "outcome_count",
-            "price",
+            "outcome_price",
             "date",
-            # "total_incomes",
-            # "difference",
             "check_id"
         ]
     def to_representation(self, instance):
