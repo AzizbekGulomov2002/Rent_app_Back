@@ -113,7 +113,7 @@ class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Payments.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("count", "price", "date")
+    search_fields = ("payment_date")
     # filterset_fields = ('status', )
     filterset_class = PaymentsFilter
     serializer_class = PaymentsSerializer

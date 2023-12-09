@@ -35,8 +35,11 @@ class Client(models.Model):
     def tranzactions(self):
         outcomes = Outcome.objects.filter(client=self)
         incomes = Income.objects.filter(outcome__client=self)
+        payments = Payments.objects.filter(client=self)
         outcome_data = []
         income_data = []
+        payments_data = []
+        
         for outcome in outcomes:
             # Loop through Outcome objects
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
@@ -95,10 +98,19 @@ class Client(models.Model):
                 
                 "outcome": outcome_info
             })
+        for payment in payments:
+            # Loop through Payment objects
+            payments_data.append({
+                "summa": payment.summa,
+                "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
+            })
+        total_summa = sum(payment.summa for payment in payments)
 
         return {
             "outcome_data": outcome_data,
-            "income_data": income_data
+            "income_data": income_data,
+            "payments_data": payments_data,
+            "total_summa": total_summa
         }
         
     
@@ -160,20 +172,20 @@ class Income(models.Model):
 
 
 class Payments(models.Model):
-    class PayType(models.TextChoices):
-        MAXSUS = "Maxsus to'lov", "Maxsus to'lov"
-        TOLIQ = "To'liq yopish", "To'liq yopish"
+    # class PayType(models.TextChoices):
+    #     MAXSUS = "Maxsus to'lov", "Maxsus to'lov"
+    #     TOLIQ = "To'liq yopish", "To'liq yopish"
 
-    pay_type = models.CharField(
-        max_length=30, choices=PayType.choices, null=True, blank=True
-    )
+    # pay_type = models.CharField(
+    #     max_length=30, choices=PayType.choices, null=True, blank=True
+    # )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
+    # product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     summa = models.FloatField()
-    date = models.DateTimeField()
+    payment_date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.client.name} | {self.product.name} | {self.summa}"
+        return f"{self.client.name} | {self.summa}"
 
 
 

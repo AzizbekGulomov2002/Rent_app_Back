@@ -46,7 +46,7 @@ admin.site.register(Income)
 
 
 class PaymentsAdmin(admin.ModelAdmin):
-    list_display = ["client", "summa", "date"]
+    list_display = ["client", "summa", "payment_date"]
     list_per_page = 10
 
     class Meta:
