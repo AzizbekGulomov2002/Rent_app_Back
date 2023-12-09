@@ -49,7 +49,8 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
-            total_income_summa = (total_income_summa)
+            related_incomes = Income.objects.filter(outcome=outcome)
+            total_income_summa = sum(income.income_summa for income in related_incomes)
 
             outcome_data.append({
                 "id": outcome.id,
@@ -58,7 +59,7 @@ class Client(models.Model):
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
-                "total_income_summa": total_income_summa,
+                "total_income_summa": total_income_summa, ##
                 "income_count": total_income_count,
                 "difference": difference,
                 "protype": protype,
