@@ -49,7 +49,7 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
-            total_income_summa = sum(income.total_income_summa for income in Income.objects.filter(outcome=outcome))
+            total_income_summa = income.total_income_summa
 
             outcome_data.append({
                 "id": outcome.id,
@@ -65,7 +65,6 @@ class Client(models.Model):
             })
 
         for income in incomes:
-            # Loop through Income objects
             related_outcome = Outcome.objects.get(id=income.outcome_id)
             related_outcome_date = related_outcome.outcome_date.astimezone(timezone.get_current_timezone())
             
