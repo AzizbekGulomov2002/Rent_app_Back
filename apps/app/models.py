@@ -50,7 +50,7 @@ class Client(models.Model):
 
             outcome_data.append({
                 "id": outcome.id,
-                "date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
                 "outcome_price": outcome.outcome_price,
@@ -64,7 +64,7 @@ class Client(models.Model):
             related_outcome_date = income.date.astimezone(timezone.get_current_timezone())
             outcome_info = {
                 "id": related_outcome.id,
-                "date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "income_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": related_outcome.protype.name,
                 "outcome_count": related_outcome.outcome_count,
                 "outcome_price": related_outcome.outcome_price,
@@ -78,7 +78,7 @@ class Client(models.Model):
 
             income_data.append({
                 "id": income.id,
-                "date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "income_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": income.outcome.protype.name,
                 "income_count": income.income_count,
                 "outcome": outcome_info
