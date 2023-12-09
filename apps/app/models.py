@@ -51,7 +51,7 @@ class Client(models.Model):
             outcome_data.append({
                 "id": outcome.id,
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                # "protype": outcome.protype.name,
+                "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
                 "outcome_price": outcome.outcome_price,
                 "income_count": total_income_count,
@@ -81,7 +81,7 @@ class Client(models.Model):
                 "id": income.id,
                 "income_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "day": income.day,
-                "protype": income.outcome.protype.name,
+                # "protype": income.outcome.protype.name,
                 "income_count": income.income_count,
                 "outcome": outcome_info
             })
