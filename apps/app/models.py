@@ -40,7 +40,7 @@ class Client(models.Model):
         for outcome in outcomes:
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
             difference = outcome.outcome_count - total_income_count
-            outcome_date = outcome.date.astimezone(timezone.get_current_timezone())
+            outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
             protype = {
                 "id": outcome.protype.id,
                 "name": outcome.protype.name,
@@ -61,7 +61,7 @@ class Client(models.Model):
 
         for income in incomes:
             related_outcome = Outcome.objects.get(id=income.outcome_id)
-            related_outcome_date = income.date.astimezone(timezone.get_current_timezone())
+            related_outcome_date = income.income_date.astimezone(timezone.get_current_timezone())
             outcome_info = {
                 "id": related_outcome.id,
                 "income_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
