@@ -99,18 +99,20 @@ class Client(models.Model):
                 "outcome": outcome_info
             })
         for payment in payments:
-            # Loop through Payment objects
+            total_payment = sum(payment.summa for payment in payments)
             payments_data.append({
+                "summa": payment.id,
                 "summa": payment.summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "total_payment": total_payment
             })
-        total_summa = sum(payment.summa for payment in payments)
+        
 
         return {
             "outcome_data": outcome_data,
             "income_data": income_data,
             "payments_data": payments_data,
-            "total_summa": total_summa
+            
         }
         
     
