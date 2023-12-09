@@ -151,10 +151,10 @@ class Income(models.Model):
     
     @property
     def total_income_summa(self):
-        all_incomes = Income.objects.all()
-        total_sum = sum(income.income_summa for income in all_incomes)
+        related_incomes = Income.objects.filter(outcome=self.outcome)
+        total_sum = sum(income.income_summa for income in related_incomes)
         return total_sum
-
+    
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
 
