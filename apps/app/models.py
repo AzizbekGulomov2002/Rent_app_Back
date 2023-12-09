@@ -89,6 +89,7 @@ class Client(models.Model):
                 "income_date": income_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "day": income.day,
                 "income_count": income.income_count,
+                "income_summa": income.income_summa,
                 "outcome": outcome_info
             })
 
@@ -141,7 +142,9 @@ class Income(models.Model):
     day = models.IntegerField()
     income_date = models.DateTimeField()
 
-
+    @property
+    def income_summa(self):
+        return self.outcome.total_daily_price*self.day
 
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"

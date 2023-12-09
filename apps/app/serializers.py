@@ -78,6 +78,7 @@ class IncomeSerializer(serializers.ModelSerializer):
             "income_count",
             "day",
             "income_date",
+            "income_summa",
         ]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
