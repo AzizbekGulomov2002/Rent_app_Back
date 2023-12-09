@@ -49,6 +49,7 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
+            total_income_summa = Income.objects.filter(outcome=outcome).aggregate(total=Sum('total_income_summa'))['total'] or 0
 
             outcome_data.append({
                 "id": outcome.id,
@@ -57,6 +58,7 @@ class Client(models.Model):
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
+                "total_income_summa": total_income_summa,
                 "income_count": total_income_count,
                 "difference": difference,
                 "protype": protype,
@@ -66,7 +68,7 @@ class Client(models.Model):
             # Loop through Income objects
             related_outcome = Outcome.objects.get(id=income.outcome_id)
             related_outcome_date = related_outcome.outcome_date.astimezone(timezone.get_current_timezone())
-
+            
             outcome_info = {
                 "id": related_outcome.id,
                 "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
