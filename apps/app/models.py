@@ -55,6 +55,7 @@ class Client(models.Model):
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
+                "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
                 "income_count": total_income_count,
                 "difference": difference,
@@ -72,6 +73,7 @@ class Client(models.Model):
                 "protype": related_outcome.protype.name,
                 "outcome_count": related_outcome.outcome_count,
                 "outcome_price": related_outcome.outcome_price,
+                "total_daily_price": related_outcome.total_daily_price,
                 "protype": {
                     "id": related_outcome.protype.id,
                     "name": related_outcome.protype.name,
@@ -109,7 +111,7 @@ class Outcome(models.Model):
     check_id = models.IntegerField(default=1000)
     
     @property
-    def total(self):
+    def total_daily_price(self):
         if self.protype.price == self.outcome_price:
             return self.protype.price * self.outcome_count
         else:
