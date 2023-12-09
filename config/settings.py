@@ -93,24 +93,24 @@ DATABASES = {
 REST_FRAMEWORK = {
     # This is for JSON
 
-    "DEFAULT_RENDERER_CLASSES": (
-        "config.custom_renderers.CustomRenderer",
-        "rest_framework.renderers.JSONRenderer",
-    ),
+    # "DEFAULT_RENDERER_CLASSES": (
+    #     "config.custom_renderers.CustomRenderer",
+    #     "rest_framework.renderers.JSONRenderer",
+    # ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_authtoken.auth.AuthTokenAuthentication',
         # "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.AllowAny',
-    # ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    # ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
-    "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    # "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
 }
 
 

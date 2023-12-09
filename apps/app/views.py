@@ -2,15 +2,10 @@ from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework.viewsets import ModelViewSet
-
 from apps.app.filters import *
-from rest_framework import pagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.filters import SearchFilter
-from rest_framework import pagination, response
-
-
 from rest_framework import viewsets, filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -99,9 +94,7 @@ class OutcomeViewset(ModelViewSet):
     search_fields = ("client","outcome_count", "outcome_price", "date","check_id")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     return queryset
+
 
 
 class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):

@@ -15,19 +15,6 @@ class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ["id", "name", "product", "format", "price"]
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     product_instance = instance.product
-    #     if product_instance:
-    #         representation['product'] = ProductSerializer(product_instance).data
-    #     else:
-    #         representation['product'] = None
-    #     format_instance = instance.format
-    #     if format_instance:
-    #         representation['format'] = FormatSerializer(format_instance).data
-    #     else:
-    #         representation['format'] = None
-    #     return representation
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['product'] = ProductSerializer(instance=instance.product).data
@@ -35,17 +22,14 @@ class ProTypeSerializer(serializers.ModelSerializer):
         return representation
 
     
-
-
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ["id", "name", "passport", "phone","tranzactions", "desc"]
 
 
-
 class OutcomeSerializer(serializers.ModelSerializer):
-    # date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     class Meta:
         model = Outcome
         fields = [
@@ -55,16 +39,23 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "outcome_count",
             "outcome_price",
             "date",
+            "total",
             "check_id"
         ]
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['protype'] = ProTypeSerializer(instance=instance.protype).data
+        protype_instance = instance.protype
+        representation['protype'] = {
+            "name": protype_instance.name,
+            "price": protype_instance.price,
+            "format": protype_instance.format.name
+        }
         return representation
 
 
 class IncomeSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%SZ")
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     class Meta:
         model = Income
         fields = [
