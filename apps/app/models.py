@@ -49,7 +49,7 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
-            total_income_summa = Income.objects.filter(outcome=outcome).aggregate(total=Sum('total_income_summa'))['total'] or 0
+            total_income_summa = sum(income.total_income_summa for income in Income.objects.filter(outcome=outcome))
 
             outcome_data.append({
                 "id": outcome.id,
