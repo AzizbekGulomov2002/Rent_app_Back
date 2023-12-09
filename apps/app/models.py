@@ -79,7 +79,7 @@ class Client(models.Model):
 
             income_data.append({
                 "id": income.id,
-                "income_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "income_date": income.income_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "day": income.day,
                 # "protype": income.outcome.protype.name,
                 "income_count": income.income_count,
