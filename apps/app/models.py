@@ -149,9 +149,8 @@ class Income(models.Model):
     
     @classmethod
     def total_income_summa(cls):
-        all_incomes = cls.objects.all()
-        total_sum = sum(income.income_summa for income in all_incomes)
-        return total_sum
+        total_sum = cls.objects.filter(outcome_id__in=Outcome.objects.values_list('id', flat=True)).aggregate(total=Sum('income_summa'))['total']
+        return total_sum or 0
 
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
