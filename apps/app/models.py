@@ -35,7 +35,6 @@ class Client(models.Model):
     def transactions(self):
         outcomes = Outcome.objects.filter(client=self)
         incomes = Income.objects.filter(outcome__client=self)
-        income_total_summa = Income.objects.filter(outcome__client=self).aggregate(total=Sum('total_income_summa'))['total'] or 0
         outcome_data = []
         income_data = []
 
@@ -50,14 +49,14 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
-
+            total_income_summa = Income.objects.filter(outcome=outcome).aggregate(total=Sum('total_income_summa'))['total'] or 0
             outcome_data.append({
                 "id": outcome.id,
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": outcome.protype.name,
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
-                "total_income_summa": income_total_summa,
+                "total_income_summa": total_income_summa,
                 "outcome_price": outcome.outcome_price,
                 "income_count": total_income_count,
                 "difference": difference,
