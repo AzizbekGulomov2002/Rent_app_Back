@@ -148,8 +148,8 @@ class Income(models.Model):
         return self.outcome.total_daily_price*self.day
     
     @property
-    def total_income_summa(cls):
-        all_incomes = cls.objects.all()
+    def total_income_summa(self):
+        all_incomes = Income.objects.all()
         total_sum = sum(income.income_summa for income in all_incomes)
         return total_sum
 
