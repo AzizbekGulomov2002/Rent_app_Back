@@ -2,7 +2,7 @@ from django_filters import rest_framework as filters
 from apps.app.models import *
 from django.db.models import fields
 from django.db.models import F, Q, Sum, ExpressionWrapper
-
+import django_filters
 
 class ProductFilter(filters.FilterSet):
     class Meta:
@@ -21,6 +21,9 @@ class ProductTypeFilter(filters.FilterSet):
 
 
 class ClientFilter(filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
+    passport = django_filters.CharFilter(field_name='passport', lookup_expr='icontains')
+    phone = django_filters.CharFilter(field_name='phone', lookup_expr='icontains')
     class Meta:
         model = Client
         fields = ["name", "passport", "phone"]

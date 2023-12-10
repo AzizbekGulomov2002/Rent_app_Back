@@ -33,9 +33,9 @@ class Client(models.Model):
     
     @property
     def tranzactions(self):
-        outcomes = Outcome.objects.filter(client=self)
-        incomes = Income.objects.filter(outcome__client=self)
-        payments = Payments.objects.filter(client=self)
+        outcomes = Outcome.objects.filter(client=self).order_by('-id') 
+        incomes = Income.objects.filter(outcome__client=self).order_by('-id')
+        payments = Payments.objects.filter(client=self).order_by('-id')
         outcome_data = []
         income_data = []
         payments_data = []
@@ -105,13 +105,16 @@ class Client(models.Model):
                 "payment_summa": payment.payment_summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
             })
+        total_income_summa = sum(income.income_summa for income in incomes)
         total_payment = sum(payment.payment_summa for payment in payments)
+        debt = total_income_summa - total_payment
 
         return {
             "outcome_data": outcome_data,
             "income_data": income_data,
             "payments_data": payments_data,
-            "total_payment": total_payment
+            "total_payment": total_payment,
+            "debt": debt
         }
         
     
@@ -184,6 +187,7 @@ class Payments(models.Model):
     # product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     payment_summa = models.FloatField()
     payment_date = models.DateTimeField()
+    desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.client.name} | {self.payment_summa}"
