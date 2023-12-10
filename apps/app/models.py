@@ -102,10 +102,10 @@ class Client(models.Model):
             # Loop through Payment objects
             payments_data.append({
                 "id": payment.id,
-                "payment_summa": payment.summa,
+                "payment_summa": payment.payment_summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
             })
-        total_payment = sum(payment.summa for payment in payments)
+        total_payment = sum(payment.payment_summa for payment in payments)
 
         return {
             "outcome_data": outcome_data,
@@ -182,11 +182,11 @@ class Payments(models.Model):
     # )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     # product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    summa = models.FloatField()
+    payment_summa = models.FloatField()
     payment_date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.client.name} | {self.summa}"
+        return f"{self.client.name} | {self.payment_summa}"
 
 
 
