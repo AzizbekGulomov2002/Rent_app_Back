@@ -59,6 +59,7 @@ class Client(models.Model):
                 "id": outcome.id,
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": outcome.protype.name,
+                "outcome_price_type": outcome.outcome_price_type,
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
@@ -76,6 +77,7 @@ class Client(models.Model):
                 "id": related_outcome.id,
                 "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": related_outcome.protype.name,
+                "outcome_price_type": related_outcome.outcome_price_type,
                 "outcome_count": related_outcome.outcome_count,
                 "outcome_price": related_outcome.outcome_price,
                 "total_daily_price": related_outcome.total_daily_price,
@@ -138,6 +140,11 @@ class Client(models.Model):
         return f"{self.name} | {self.status}"
 
 class Outcome(models.Model):
+    PRICE_TYPE_CHOICES = (
+        ('Narxida', 'Narxida'),
+        ('Chegirmada', 'Chegirmada'),
+    )
+    outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     outcome_count = models.FloatField()

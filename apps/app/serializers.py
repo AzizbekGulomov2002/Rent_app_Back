@@ -38,6 +38,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "id",
             "client",
             "protype",
+            "outcome_price_type",
             "outcome_count",
             "outcome_price",
             "outcome_date",
@@ -51,6 +52,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         protype_instance = instance.protype
         representation['protype'] = {
+            "id": protype_instance.id,
             "name": protype_instance.name,
             "price": protype_instance.price,
             "format": protype_instance.format.name
