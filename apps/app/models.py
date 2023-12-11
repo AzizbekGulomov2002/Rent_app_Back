@@ -106,9 +106,11 @@ class Client(models.Model):
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "desc": payment.desc,
             })
-        total_income_summa = sum(income.income_summa for income in incomes)      
+        # total_income_summa = sum(income.income_summa for income in incomes)  
+        total_income_summa = sum(map(lambda x: x.income_summa, incomes))    
         total_payment = sum(payment.payment_summa for payment in payments)
-        total_incomes_summa = sum(total_income_summa for income in incomes) # all of total_income_summa sums
+        # total_incomes_summa = sum(total_income_summa for income in incomes) # all of total_income_summa sums
+        total_incomes_summa = sum(map(lambda x: x.income_summa, incomes))
         debt = total_incomes_summa - total_payment
         
         
