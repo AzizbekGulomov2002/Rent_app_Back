@@ -92,6 +92,7 @@ class PaymentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payments
         fields = ["id", "client","payment_summa", "payment_date","desc"]
+    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['client'] = instance.client.name if instance.client else None
