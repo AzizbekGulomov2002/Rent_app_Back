@@ -93,10 +93,10 @@ DATABASES = {
 REST_FRAMEWORK = {
     # This is for JSON
 
-    # "DEFAULT_RENDERER_CLASSES": (
-    #     "config.custom_renderers.CustomRenderer",
-    #     "rest_framework.renderers.JSONRenderer",
-    # ),
+    "DEFAULT_RENDERER_CLASSES": (
+        "config.custom_renderers.CustomRenderer",
+        "rest_framework.renderers.JSONRenderer",
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_authtoken.auth.AuthTokenAuthentication',
