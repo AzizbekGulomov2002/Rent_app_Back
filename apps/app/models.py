@@ -131,10 +131,11 @@ class Client(models.Model):
     @property
     def status(self):
         transactions = self.tranzactions
-        if transactions['debt'] > 0 :
+        if transactions['debt'] > 0 or any(outcome['difference'] > 0 for outcome in transactions['outcome_data']):
             return "Qarzdorlik"
         else:
             return "Shartnoma yakunlangan"
+
 
     def __str__(self):
         return f"{self.name} | {self.status}"
