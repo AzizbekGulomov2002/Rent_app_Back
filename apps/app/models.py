@@ -133,6 +133,8 @@ class Client(models.Model):
         transactions = self.tranzactions
         if transactions['debt'] > 0 or any(outcome['difference'] > 0 for outcome in transactions['outcome_data']):
             return "Qarzdorlik"
+        elif any(outcome['difference'] == 0 for outcome in transactions['outcome_data']):
+            return "Aktiv"
         else:
             return "Shartnoma yakunlangan"
 
