@@ -104,6 +104,7 @@ class Client(models.Model):
                 "id": payment.id,
                 "payment_summa": payment.payment_summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "desc": payment.desc,
             })
         total_income_summa = sum(income.income_summa for income in incomes)
         total_payment = sum(payment.payment_summa for payment in payments)
