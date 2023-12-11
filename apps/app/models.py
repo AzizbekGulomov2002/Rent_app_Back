@@ -108,8 +108,9 @@ class Client(models.Model):
             })
         total_income_summa = sum(income.income_summa for income in incomes)      
         total_payment = sum(payment.payment_summa for payment in payments)
-        debt = total_income_summa - total_payment
-        # total_incomes_summa = sum(total_income_summa for income in incomes)
+        total_incomes_summa = sum(total_income_summa for income in incomes)
+        debt = total_incomes_summa - total_payment
+        
         
 
         return {
