@@ -25,7 +25,7 @@ class ProTypeSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ["id", "name", "passport", "phone","tranzactions","status", "desc"]
+        fields = ["id", "name", "passport", "phone","tranzactions", "desc","status",]
 
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")

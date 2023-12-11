@@ -135,7 +135,7 @@ class Client(models.Model):
             return "Shartnoma yakunlangan"
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} | {self.status}"
 
 class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
