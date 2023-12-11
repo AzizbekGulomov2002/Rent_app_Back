@@ -30,13 +30,7 @@ class Client(models.Model):
     passport = models.CharField(max_length=13, null=True, blank=True)
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
-    @property
-    def status(self):
-        transactions = self.tranzactions
-        if transactions['debt'] > 0 and transactions['difference'] > 0:
-            return "Qarzdorlik"
-        else:
-            return "Shartnoma yakunlangan"
+    
     @property
     def tranzactions(self):
         outcomes = Outcome.objects.filter(client=self).order_by('-id') 
@@ -132,7 +126,13 @@ class Client(models.Model):
     
     
     
-    
+    @property
+    def status(self):
+        transactions = self.tranzactions
+        if transactions['debt'] > 0 and transactions['difference'] > 0:
+            return "Qarzdorlik"
+        else:
+            return "Shartnoma yakunlangan"
 
     def __str__(self):
         return f"{self.name}"
