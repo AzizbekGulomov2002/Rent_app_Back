@@ -131,7 +131,7 @@ class Client(models.Model):
     @property
     def status(self):
         transactions = self.tranzactions
-        if transactions['debt'] > 0 or transactions['difference'] > 0:
+        if transactions['debt'] > 0 :
             return "Qarzdorlik"
         else:
             return "Shartnoma yakunlangan"
