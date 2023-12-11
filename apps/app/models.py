@@ -123,7 +123,15 @@ class Client(models.Model):
             "debt": debt,
             'total_incomes_summa':total_incomes_summa,
         }
-        
+    
+    
+    @property
+    def status(self):
+        transactions = self.tranzactions
+        if transactions['debt'] > 0 and transactions['difference'] > 0:
+            return "Qarzdorlik"
+        else:
+            return "Shartnoma yakunlangan"
     
 
     def __str__(self):
