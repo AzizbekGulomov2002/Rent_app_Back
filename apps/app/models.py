@@ -119,6 +119,7 @@ class Client(models.Model):
             "payments_data": payments_data,
             "total_payment": total_payment,
             "debt": debt,
+            'total_incomes_summa':total_incomes_summa,
         }
         
     
