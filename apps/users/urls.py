@@ -23,6 +23,9 @@ router.register("outcomes", OutcomeViewset, basename="outcome")
 router.register("incomes", IncomeViewset, basename="income")
 router.register("payments", PaymentsViewset, basename="payments")
 
+router.register("service-type", ServiceTypeViewset, basename="service-type")
+router.register("addition-service", Addition_serviceViewset, basename="addition-service")
+
 # router.register('usersme', UserMeViewSet, basename='userme')
 
 

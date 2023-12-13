@@ -188,7 +188,7 @@ class Income(models.Model):
 
     @property
     def income_summa(self):
-        return self.outcome.total_daily_price*self.day
+        return self.income_count*self.day
     
     @property
     def total_income_summa(self):
@@ -219,5 +219,18 @@ class Payments(models.Model):
 
 
 
-# 2023-12-09T11:04:19+05:00
-# 2023-12-09T11:04:19+0500
+class ServiceType(models.Model):
+    name = models.CharField(max_length=200)
+    def __str__(self):
+        return f"{self.name}"
+
+class Addition_service(models.Model):
+    service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
+    service_price = models.PositiveBigIntegerField()
+    service_date = models.DateTimeField()
+    desc = models.TextField(null=True, blank=True)
+
+    
+    def __str__(self):
+        return f"{self.service_type.name} - {self.service_price}"
+    

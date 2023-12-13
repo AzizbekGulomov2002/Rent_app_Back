@@ -120,3 +120,27 @@ class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
+
+
+class ServiceTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+    queryset = ServiceType.objects.all().order_by("-id")
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    # search_fields = ("payment_date")
+    # filterset_class = ServiceTypeFilter
+    serializer_class = ServiceTypeSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+
+class Addition_serviceViewset(CustomPaginationMixin, viewsets.ModelViewSet):
+    queryset = Addition_service.objects.all().order_by("-id")
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    # search_fields = ("payment_date")
+    # filterset_class = Addition_serviceFilter
+    serializer_class = Addition_serviceSerializer
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset

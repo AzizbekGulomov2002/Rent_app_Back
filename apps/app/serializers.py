@@ -99,3 +99,17 @@ class PaymentsSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['client'] = instance.client.name if instance.client else None
         return representation
+
+
+class ServiceTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceType
+        fields = ["id", "name"]
+
+
+class Addition_serviceSerializer(serializers.ModelSerializer):
+    service_type = ServiceTypeSerializer()  # Represent service_type as nested object
+    class Meta:
+        model = Addition_service
+        fields = ["id", "service_type", "service_price", "service_date", "desc"]
+

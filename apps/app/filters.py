@@ -45,3 +45,16 @@ class PaymentsFilter(filters.FilterSet):
     class Meta:
         model = Payments
         fields = ["client", "payment_date"]
+
+
+
+# class ServiceTypeFilter(filters.FilterSet):
+#     class Meta:
+#         model = ServiceType
+#         fields = ["name"]
+
+
+# class Addition_serviceFilter(filters.FilterSet):
+#     class Meta:
+#         model = Addition_service
+#         fields = ["service_type", "service_date"]

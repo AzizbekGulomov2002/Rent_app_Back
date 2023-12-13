@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Product,ProductType,Client,Outcome,Income,Payments,Format)
+from .models import (Product,ProductType,Client,Outcome,Income,Payments,Format,ServiceType,Addition_service)
 admin.site.register(ProductType)
 
 
@@ -45,12 +45,32 @@ class IncomeInline(admin.TabularInline):
 admin.site.register(Income)
 
 
+
+
+
 class PaymentsAdmin(admin.ModelAdmin):
     list_display = ["client", "payment_summa", "payment_date"]
     list_per_page = 10
 
     class Meta:
         model = Payments
-
-
 admin.site.register(Payments, PaymentsAdmin)
+
+
+
+class ServiceTypeAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]
+    list_per_page = 10
+    class Meta:
+        model = ServiceType
+admin.site.register(ServiceType, ServiceTypeAdmin)
+
+
+
+class Addition_serviceAdmin(admin.ModelAdmin):
+    list_display = ["id", "service_type", "service_price","service_date"]
+    list_per_page = 10
+
+    class Meta:
+        model = Addition_service
+admin.site.register(Addition_service, Addition_serviceAdmin)
