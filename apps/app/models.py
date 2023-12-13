@@ -22,8 +22,16 @@ class ProductType(models.Model):
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
     storage_count = models.PositiveBigIntegerField()
+    
+    @property
+    def difference_storage_count(self):
+        total_outcome_count = Outcome.objects.filter(protype=self).aggregate(total=Sum('outcome_count'))['total'] or 0
+        total_income_count = Income.objects.filter(outcome__protype=self).aggregate(total=Sum('income_count'))['total'] or 0
+
+        return self.storage_count - total_outcome_count + total_income_count
     def __str__(self):
         return f"{self.name}"
+    
     
 # Client class
 class Client(models.Model):
@@ -116,7 +124,23 @@ class Client(models.Model):
         total_incomes_summa = sum(map(lambda x: x.income_summa, incomes))
         debt = total_incomes_summa - total_payment
         
-        
+        additional_services_data = []
+        additional_services = Addition_service.objects.filter(client=self)
+        total_service_price = sum(service.service_price for service in additional_services)
+        for service in additional_services:
+            service_type = {
+                "id": service.service_type.id,
+                "name": service.service_type.name
+                # Other fields you want to include
+            }
+            additional_services_data.append({
+                "id": service.id,
+                "service_type": service_type,
+                "service_price": service.service_price,
+                "service_date": service.service_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "desc": service.desc
+                # Other fields you want to include
+            })
 
         return {
             "outcome_data": outcome_data,
@@ -125,6 +149,8 @@ class Client(models.Model):
             "total_payment": total_payment,
             "debt": debt,
             'total_incomes_summa':total_incomes_summa,
+            "additional_services_data": additional_services_data,
+            "total_service_price": total_service_price
         }
     
     
@@ -163,6 +189,30 @@ class Client(models.Model):
                 daily_debt = days_difference * outcome['protype']['price']  # Replace 'price' with your actual field
                 return daily_debt
         return 0
+    
+    @property
+    def daily_debt(self):
+        debt_days = self.debt_days
+        transactions = self.tranzactions
+        outcomes_data = transactions['outcome_data']
+        for outcome in outcomes_data:
+            if outcome['difference'] > 0:
+                daily_debt = debt_days * outcome['protype']['price']  # Replace 'price' with your actual field
+                return daily_debt
+        return 0  
+    
+    @property
+    def debt_days(self):
+        transactions = self.tranzactions
+        outcomes_data = transactions['outcome_data']
+        for outcome in outcomes_data:
+            if outcome['difference'] > 0:
+                outcome_date = datetime.strptime(outcome['outcome_date'], "%Y-%m-%dT%H:%M:%S%z")
+                today = datetime.now(outcome_date.tzinfo)
+                days_difference = (today - outcome_date).days
+                return days_difference if days_difference > 0 else 0
+        return 0  # agar difference > 0 bo'lgan outcome topilmagan bo'lsa
+
 
 
     def __str__(self):
@@ -214,15 +264,24 @@ class Income(models.Model):
     day = models.IntegerField()
     income_date = models.DateTimeField()
 
-    @property
-    def income_summa(self):
-        return self.income_count*self.day
+    # @property
+    # def income_summa(self):
+    #     return self.outcome.outcome_price*self.day
     
     @property
     def total_income_summa(self):
         related_incomes = Income.objects.filter(outcome=self.outcome)
         total_sum = sum(income.income_summa for income in related_incomes)
         return total_sum
+    
+    @property
+    def income_summa(self):
+        if self.outcome.outcome_price_type == "Narxida":
+            return self.outcome.outcome_price * self.day * self.income_count
+        elif self.outcome.outcome_price_type == "Chegirmada":
+            return self.outcome.outcome_price * self.day * self.income_count  # Change this to self.income.income_price if needed
+        else:
+            return 0  # Or handle other cases as needed
     
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
@@ -253,6 +312,7 @@ class ServiceType(models.Model):
         return f"{self.name}"
 
 class Addition_service(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     service_price = models.PositiveBigIntegerField()
     service_date = models.DateTimeField()
