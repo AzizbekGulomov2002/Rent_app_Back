@@ -238,6 +238,12 @@ class Outcome(models.Model):
         else:
             return self.outcome_price * self.outcome_count
         
+    @property
+    def debt_days(self):
+        today = datetime.now(self.outcome_date.tzinfo)
+        days_difference = (today - self.outcome_date).days
+        return days_difference if days_difference > 0 and self.difference > 0 else 0
+        
     
         
     def save(self, *args, **kwargs):

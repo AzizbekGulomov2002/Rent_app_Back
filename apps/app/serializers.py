@@ -45,6 +45,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "income_count",
             "difference",
             "total_daily_price",
+            "debt_days",
             "check_id"
         ]
 
