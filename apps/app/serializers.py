@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
-        fields = ["id", "name", "product", "format", "price"]
+        fields = ["id", "name", "product", "format", "price","storage_count"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['product'] = ProductSerializer(instance=instance.product).data
@@ -25,7 +25,7 @@ class ProTypeSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ["id", "name", "passport", "phone","tranzactions", "desc","status",]
+        fields = ["id", "name", "passport", "phone","tranzactions", "desc","status","daily_debt"]
 
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")

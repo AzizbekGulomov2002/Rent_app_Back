@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
-
+from datetime import datetime, timedelta
 # Product class
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -21,6 +21,7 @@ class ProductType(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
+    storage_count = models.PositiveBigIntegerField()
     def __str__(self):
         return f"{self.name}"
     
@@ -128,6 +129,16 @@ class Client(models.Model):
     
     
     
+    # @property
+    # def status(self):
+    #     transactions = self.tranzactions
+    #     if transactions['debt'] > 0 and any(outcome['difference'] > 0 for outcome in transactions['outcome_data']):
+    #         return "Qarzdorlik"
+    #     elif any(outcome['difference'] == 0 for outcome in transactions['outcome_data']):
+    #         return "Aktiv"
+    #     else:
+    #         return "Shartnoma yakunlangan"
+
     @property
     def status(self):
         transactions = self.tranzactions
@@ -135,8 +146,23 @@ class Client(models.Model):
             return "Qarzdorlik"
         elif any(outcome['difference'] == 0 for outcome in transactions['outcome_data']):
             return "Aktiv"
+        elif self.daily_debt > 0:
+            return "Qarzdorlik by days"  # Change this according to your status criteria
         else:
             return "Shartnoma yakunlangan"
+        
+    @property
+    def daily_debt(self):
+        transactions = self.tranzactions
+        outcomes_data = transactions['outcome_data']
+        for outcome in outcomes_data:
+            if outcome['difference'] > 0:
+                outcome_date = datetime.strptime(outcome['outcome_date'], "%Y-%m-%dT%H:%M:%S%z")
+                today = datetime.now(outcome_date.tzinfo)
+                days_difference = (today - outcome_date).days
+                daily_debt = days_difference * outcome['protype']['price']  # Replace 'price' with your actual field
+                return daily_debt
+        return 0
 
 
     def __str__(self):
@@ -161,6 +187,8 @@ class Outcome(models.Model):
             return self.protype.price * self.outcome_count
         else:
             return self.outcome_price * self.outcome_count
+        
+    
         
     def save(self, *args, **kwargs):
         if not self.pk:
