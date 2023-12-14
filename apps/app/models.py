@@ -49,51 +49,10 @@ class Client(models.Model):
         income_data = []
         payments_data = []
         
-        # for outcome in outcomes:
-        #     # Loop through Outcome objects
-        #     total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
-        #     difference = outcome.outcome_count - total_income_count
-        #     outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
-
-        #     protype = {
-        #         "id": outcome.protype.id,
-        #         "name": outcome.protype.name,
-        #         "price": outcome.protype.price,
-        #         "format": outcome.protype.format.name
-        #     }
-        #     related_incomes = Income.objects.filter(outcome=outcome)
-        #     total_income_summa = sum(income.income_summa for income in related_incomes)
-
-        #     # Calculate daily_debt and debt_days here
-        #     daily_debt = 0  # Replace with your calculation for daily_debt
-        #     debt_days = 0  # Replace with your calculation for debt_days
-
-        #     outcome_data.append({
-        #         "id": outcome.id,
-        #         "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        #         "protype": outcome.protype.name,
-        #         "outcome_price_type": outcome.outcome_price_type,
-        #         "outcome_count": outcome.outcome_count,
-        #         "total_daily_price": outcome.total_daily_price,
-        #         "outcome_price": outcome.outcome_price,
-        #         "total_income_summa": total_income_summa,
-        #         "income_count": total_income_count,
-        #         "difference": difference,
-        #         "protype": protype,
-        #         "daily_debt": daily_debt,  # Include daily_debt here
-        #         "debt_days": debt_days,  # Include debt_days here
-        #     })
-
         for outcome in outcomes:
             # Loop through Outcome objects
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
-            outcome_count = outcome.outcome_count
-
-            # Find related incomes for this outcome
-            related_incomes = Income.objects.filter(outcome_id=outcome.id)
-            total_income_for_outcome = sum(income.income_count for income in related_incomes)
-
-            difference = outcome_count - total_income_for_outcome
+            difference = outcome.outcome_count - total_income_count
             outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
 
             protype = {
@@ -102,6 +61,10 @@ class Client(models.Model):
                 "price": outcome.protype.price,
                 "format": outcome.protype.format.name
             }
+            related_incomes = Income.objects.filter(outcome=outcome)
+            total_income_summa = sum(income.income_summa for income in related_incomes)
+
+            
 
             # Calculate daily_debt and debt_days here
             daily_debt = 0  # Replace with your calculation for daily_debt
@@ -115,14 +78,13 @@ class Client(models.Model):
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
-                "total_income_summa": total_income_for_outcome,
+                "total_income_summa": total_income_summa,
                 "income_count": total_income_count,
                 "difference": difference,
                 "protype": protype,
                 "daily_debt": daily_debt,  # Include daily_debt here
                 "debt_days": debt_days,  # Include debt_days here
             })
-
 
 
         for income in incomes:
@@ -239,6 +201,21 @@ class Outcome(models.Model):
             return self.protype.price * self.outcome_count
         else:
             return self.outcome_price * self.outcome_count
+
+    # @property
+    # def daily_debt(self):
+    #     transactions = self.tranzactions
+    #     outcomes_data = transactions['outcome_data']
+    #     for outcome in outcomes_data:
+    #         if outcome['difference'] > 0:
+    #             outcome_date = datetime.strptime(outcome['outcome_date'], "%Y-%m-%dT%H:%M:%S%z")
+    #             today = datetime.now(outcome_date.tzinfo)
+    #             days_difference = (today - outcome_date).days
+    #             daily_debt = days_difference * outcome['protype']['price']  # Replace 'price' with your actual field
+    #             return daily_debt
+    #     return 0
+    
+
         
     @property
     def debt_days(self):
@@ -290,6 +267,12 @@ class Income(models.Model):
             return self.outcome.outcome_price * self.day * self.income_count  # Change this to self.income.income_price if needed
         else:
             return 0  # Or handle other cases as needed
+
+    # @property
+    # def debt_days(self):
+    #     today = datetime.now(timezone.now().tzinfo)
+    #     days_difference = (today - self.income_date).days
+    #     return days_difference if days_difference > 0 and self.outcome.difference > 0 else 0
     
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
