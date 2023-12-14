@@ -155,15 +155,6 @@ class Client(models.Model):
     
     
     
-    # @property
-    # def status(self):
-    #     transactions = self.tranzactions
-    #     if transactions['debt'] > 0 and any(outcome['difference'] > 0 for outcome in transactions['outcome_data']):
-    #         return "Qarzdorlik"
-    #     elif any(outcome['difference'] == 0 for outcome in transactions['outcome_data']):
-    #         return "Aktiv"
-    #     else:
-    #         return "Shartnoma yakunlangan"
 
     @property
     def status(self):
@@ -190,15 +181,15 @@ class Client(models.Model):
                 return daily_debt
         return 0
     
-    @property
-    def daily_debt(self):
-        debt_days = self.debt_days
-        transactions = self.tranzactions
-        outcomes_data = transactions['outcome_data']
-        for outcome in outcomes_data:
-            if outcome['difference'] > 0:
-                daily_debt = debt_days * outcome['protype']['price']  # Replace 'price' with your actual field
-                return daily_debt
+    # @property
+    # def daily_debt(self):
+    #     debt_days = self.debt_days
+    #     transactions = self.tranzactions
+    #     outcomes_data = transactions['outcome_data']
+    #     for outcome in outcomes_data:
+    #         if outcome['difference'] > 0:
+    #             daily_debt = debt_days * outcome['protype']['price']  # Replace 'price' with your actual field
+    #             return daily_debt
         return 0  
     
     @property

@@ -109,8 +109,12 @@ class ServiceTypeSerializer(serializers.ModelSerializer):
 
 
 class Addition_serviceSerializer(serializers.ModelSerializer):
-    service_type = ServiceTypeSerializer()  # Represent service_type as nested object
+    # service_type = ServiceTypeSerializer() 
     class Meta:
         model = Addition_service
         fields = ["id","client", "service_type", "service_price", "service_date", "desc"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['service_type'] = ServiceTypeSerializer(instance=instance.service_type).data
+        return representation
 
