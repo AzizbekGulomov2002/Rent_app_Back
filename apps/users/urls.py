@@ -17,7 +17,9 @@ router.register("users", UserViewset, basename="user")
 router.register("formats", FormatViewset, basename="formats")
 router.register("protypes", ProTypeViewset, basename="protype")
 router.register("all-protypes", AllProTypeViewset, basename="all-protypes")
+
 router.register("storages", StorageViewset, basename="storages")
+
 
 router.register("products", ProductViewset, basename="product")
 router.register("clients", ClientViewset, basename="client")

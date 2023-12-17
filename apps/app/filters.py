@@ -14,6 +14,7 @@ class StorageFilter(filters.FilterSet):
         model = Storage
         fields = ["protype","storage_date"]
 
+
 class FormatFilter(filters.FilterSet):
     class Meta:
         model = Format

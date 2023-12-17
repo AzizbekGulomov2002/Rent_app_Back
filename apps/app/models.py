@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import datetime, timedelta
+
+from django.db.models import Sum, IntegerField
 # Product class
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -27,15 +29,44 @@ class ProductType(models.Model):
     format = models.ForeignKey(Format, on_delete=models.CASCADE)
     price = models.FloatField()
     
+    
+    @property
+    def total_storage_count(self):
+        if self.storage_type == 'Sanaladigan':
+            total_import = self.storage_set.filter(action_type='Kiritish').aggregate(total_import=Sum('storage_count'))['total_import'] or 0
+            total_remove = self.storage_set.filter(action_type='Chiqarish').aggregate(total_remove=Sum('storage_count'))['total_remove'] or 0
+            return total_import - total_remove
+        return None
+    
+    @property
+    def current_storage_count(self):
+        outcomes = Outcome.objects.filter(protype=self)
+        incomes = Income.objects.filter(outcome__protype=self)
+
+        total_outcome_count = sum(outcome.outcome_count for outcome in outcomes)
+        total_income_count = sum(income.income_count for income in incomes)
+
+        # return total_outcome_count - total_income_count
+        return self.total_storage_count-(total_outcome_count - total_income_count)
+    
     def __str__(self):
         return f"{self.name}"
 
 class Storage(models.Model):
+    ACTION_TYPE = (
+        ('Kiritish', 'Kiritish'),
+        ('Chiqarish', 'Chiqarish'),
+    )
+    action_type = models.CharField(max_length=20, choices=ACTION_TYPE, default='Kiritish')
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     storage_count = models.PositiveBigIntegerField()
     storage_date = models.DateTimeField()
+    desc = models.TextField(null=True, blank=True)
     def __str__(self):
         return f"{self.protype.name} |  {self.storage_count} | {self.storage_date}"
+    
+
+   
     
 # Client class
 class Client(models.Model):
@@ -57,11 +88,12 @@ class Client(models.Model):
             # Loop through Outcome objects
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
             
-            related_storage = Storage.objects.filter(protype=outcome.protype).last()
-            storage_count = related_storage.storage_count if related_storage else 0
-            difference = storage_count - outcome.outcome_count + total_income_count
+            # related_storage = Storage.objects.filter(protype=outcome.protype).last()
+            # storage_count = related_storage.storage_count if related_storage else 0
+            # difference = storage_count - outcome.outcome_count + total_income_count
             
-            # difference = outcome.outcome_count - total_income_count
+            difference = outcome.outcome_count - total_income_count
+            
             outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
             
             total_incomes_summa = sum(map(lambda x: x.income_summa, incomes))

@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
-        fields = ["id", "name","storage_type", "product", "format", "price"]
+        fields = ["id", "name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['product'] = ProductSerializer(instance=instance.product).data
@@ -26,10 +26,10 @@ class ProTypeSerializer(serializers.ModelSerializer):
 class StorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Storage
-        fields = ["id", "protype", "storage_count", "storage_date"]
+        fields = ["id", "protype","action_type", "storage_count", "storage_date","desc"]
     
 
-    
+
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client

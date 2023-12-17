@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Product,ProductType,Client,Outcome,Income,Payments,Format,ServiceType,Addition_service, Storage)
+from .models import (Storage, Product,ProductType,Client,Outcome,Income,Payments,Format, ServiceType,Addition_service)
 admin.site.register(ProductType)
 
 
@@ -31,11 +31,12 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 
 
+
 class StorageAdmin(admin.ModelAdmin):
     # list_display = ["name"]
     list_per_page = 10
     class Meta:
-        model = Product
+        model = Storage
 admin.site.register(Storage, StorageAdmin)
 
 class OutcomeInline(admin.TabularInline):

@@ -82,6 +82,9 @@ class StorageViewset(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = StorageFilter
     search_fields = ["protype"]
+    
+    
+
 
 
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
