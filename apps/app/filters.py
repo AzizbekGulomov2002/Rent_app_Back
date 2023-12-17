@@ -8,6 +8,11 @@ class ProductFilter(filters.FilterSet):
     class Meta:
         model = Product
         fields = ["name"]
+        
+class StorageFilter(filters.FilterSet):
+    class Meta:
+        model = Storage
+        fields = ["protype","storage_date"]
 
 class FormatFilter(filters.FilterSet):
     class Meta:

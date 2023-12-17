@@ -50,8 +50,10 @@ class AllProTypeViewset(ModelViewSet):
     serializer_class = ProTypeSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ProductTypeFilter 
-    search_fields = ['name','format']
-    filterset_fields = ('price', 'name','format')
+    search_fields = ['name', 'format']
+    filterset_fields = ('price', 'name', 'format')
+    ordering_fields = ('price', 'name', 'format')  # Specify fields for sorting/ordering
+    ordering = ('price',)  # Initial default ordering
 
 
 
@@ -73,6 +75,14 @@ class ProductViewset(ModelViewSet):
     search_fields = ["name"]
 
 
+class StorageViewset(ModelViewSet):
+    queryset = Storage.objects.all()
+    serializer_class = StorageSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = StorageFilter
+    search_fields = ["protype"]
+
 
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by("-id")
@@ -91,7 +101,7 @@ class OutcomeViewset(ModelViewSet):
     queryset = Outcome.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client","outcome_count", "outcome_price", "outcome_date","check_id")
+    search_fields = ("client","outcome_count", "outcome_price", "outcome_date")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
 
