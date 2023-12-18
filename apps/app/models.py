@@ -227,7 +227,8 @@ class Outcome(models.Model):
     )
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
+    # protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
+    protypes = models.ManyToManyField(ProductType)
     outcome_count = models.FloatField()
     outcome_price = models.PositiveBigIntegerField()
     outcome_date = models.DateTimeField()
@@ -315,7 +316,8 @@ class ServiceType(models.Model):
         return f"{self.name}"
 
 class Addition_service(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     service_price = models.PositiveBigIntegerField()
     service_date = models.DateTimeField()
