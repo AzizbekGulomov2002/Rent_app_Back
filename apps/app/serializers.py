@@ -27,7 +27,11 @@ class StorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Storage
         fields = ["id", "protype","action_type", "storage_count", "storage_date","desc"]
-    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['protype'] = ProTypeSerializer(instance=instance.protype).data
+        # representation['format'] = FormatSerializer(instance=instance.format).data
+        return representation
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -57,15 +61,21 @@ class OutcomeSerializer(serializers.ModelSerializer):
             # "daily_debt",
         ]
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        protype_instance = instance.protype
-        representation['protype'] = {
+    def get_protype_representation(self, protype_instance):
+        return {
             "id": protype_instance.id,
             "name": protype_instance.name,
             "price": protype_instance.price,
             "format": protype_instance.format.name
         }
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        protype_instances = instance.protype.all()
+        protype_representation = [
+            self.get_protype_representation(protype_instance) for protype_instance in protype_instances
+        ]
+        representation['protype'] = protype_representation
         return representation
 
     def get_income_count(self, instance):
@@ -77,6 +87,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
         incomes = Income.objects.filter(outcome=instance)
         total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
         return instance.outcome_count - total_income_count
+
 
 
 class IncomeSerializer(serializers.ModelSerializer):
@@ -120,7 +131,7 @@ class Addition_serviceSerializer(serializers.ModelSerializer):
     # service_type = ServiceTypeSerializer() 
     class Meta:
         model = Addition_service
-        fields = ["id","outcome", "service_type", "service_price", "service_date", "desc"]
+        fields = ["id","client", "service_type", "service_price", "service_date", "desc"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['service_type'] = ServiceTypeSerializer(instance=instance.service_type).data

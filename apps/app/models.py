@@ -77,66 +77,53 @@ class Client(models.Model):
     
     @property
     def tranzactions(self):
-        outcomes = Outcome.objects.filter(client=self).order_by('-id') 
+        outcomes = Outcome.objects.filter(client=self).order_by('-id')
         incomes = Income.objects.filter(outcome__client=self).order_by('-id')
         payments = Payments.objects.filter(client=self).order_by('-id')
+        additional_services = Addition_service.objects.filter(client=self)
+
         outcome_data = []
         income_data = []
         payments_data = []
-        
+
         for outcome in outcomes:
-            # Loop through Outcome objects
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
-            
-            # related_storage = Storage.objects.filter(protype=outcome.protype).last()
-            # storage_count = related_storage.storage_count if related_storage else 0
-            # difference = storage_count - outcome.outcome_count + total_income_count
-            
             difference = outcome.outcome_count - total_income_count
-            
             outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
-            
-            total_incomes_summa = sum(map(lambda x: x.income_summa, incomes))
-            today = datetime.now(outcome.outcome_date.tzinfo)
-            total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
+
+            total_incomes_summa = sum(income.income_summa for income in incomes)
             today = datetime.now(outcome.outcome_date.tzinfo)
             days_difference = (today - outcome.outcome_date).days
-            if days_difference == 0:
-                daily_debt = outcome.total_daily_price - total_incomes_summa
-            else:
-                daily_debt = (outcome.total_daily_price - total_incomes_summa) * days_difference
-                
-                
-            protype = {
-                "id": outcome.protype.id,
-                "name": outcome.protype.name,
-                "price": outcome.protype.price,
-                "format": outcome.protype.format.name
-            }
-            related_incomes = Income.objects.filter(outcome=outcome)
-            total_income_summa = sum(income.income_summa for income in related_incomes)
+            daily_debt = (outcome.total_daily_price - total_incomes_summa) * days_difference if days_difference > 0 else 0
+
+            protype_data = []
+            for protype_instance in outcome.protype.all():
+                protype_data.append({
+                    "id": protype_instance.id,
+                    "name": protype_instance.name,
+                    "price": protype_instance.price,
+                    "format": protype_instance.format.name
+                })
 
             outcome_data.append({
                 "id": outcome.id,
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                "protype": outcome.protype.name,
+                "protype": protype_data,
                 "outcome_price_type": outcome.outcome_price_type,
                 "outcome_count": outcome.outcome_count,
                 "total_daily_price": outcome.total_daily_price,
                 "outcome_price": outcome.outcome_price,
-                "total_income_summa": total_income_summa,
+                "total_income_summa": total_incomes_summa,
                 "income_count": total_income_count,
                 "difference": difference,
-                "protype": protype,
                 "daily_debt": daily_debt,
                 "debt_days": days_difference,
             })
 
-
         for income in incomes:
             related_outcome = Outcome.objects.get(id=income.outcome_id)
             related_outcome_date = related_outcome.outcome_date.astimezone(timezone.get_current_timezone())
-            
+
             outcome_info = {
                 "id": related_outcome.id,
                 "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -163,38 +150,19 @@ class Client(models.Model):
                 "income_summa": income.income_summa,
                 "outcome": outcome_info
             })
+
         for payment in payments:
-            # Loop through Payment objects
             payments_data.append({
                 "id": payment.id,
                 "payment_summa": payment.payment_summa,
                 "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "desc": payment.desc,
             })
-        # total_income_summa = sum(income.income_summa for income in incomes)  
-        total_income_summa = sum(map(lambda x: x.income_summa, incomes))    
+
         total_payment = sum(payment.payment_summa for payment in payments)
-        # total_incomes_summa = sum(total_income_summa for income in incomes) # all of total_income_summa sums
-        total_incomes_summa = sum(map(lambda x: x.income_summa, incomes))
+        total_incomes_summa = sum(income.income_summa for income in incomes)
         debt = total_incomes_summa - total_payment
-        
-        additional_services_data = []
-        additional_services = Addition_service.objects.filter(client=self)
         total_service_price = sum(service.service_price for service in additional_services)
-        for service in additional_services:
-            service_type = {
-                "id": service.service_type.id,
-                "name": service.service_type.name
-                # Other fields you want to include
-            }
-            additional_services_data.append({
-                "id": service.id,
-                "service_type": service_type,
-                "service_price": service.service_price,
-                "service_date": service.service_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                "desc": service.desc
-                # Other fields you want to include
-            })
 
         return {
             "outcome_data": outcome_data,
@@ -202,12 +170,15 @@ class Client(models.Model):
             "payments_data": payments_data,
             "total_payment": total_payment,
             "debt": debt,
-            'total_incomes_summa':total_incomes_summa,
-            "additional_services_data": additional_services_data,
+            'total_incomes_summa': total_incomes_summa,
+            "additional_services_data": list(additional_services.values()),  # Convert to list if necessary
             "total_service_price": total_service_price
         }
-    
-    
+
+        
+        
+
+       
     @property
     def status(self):
         transactions = self.tranzactions
@@ -233,13 +204,15 @@ class Outcome(models.Model):
     outcome_price = models.PositiveBigIntegerField()
     outcome_date = models.DateTimeField()
 
-    
     @property
     def total_daily_price(self):
-        if self.protype.price == self.outcome_price:
-            return self.protype.price * self.outcome_count
-        else:
-            return self.outcome_price * self.outcome_count
+        total_price = 0
+        for product_type in self.protype.all():
+            if product_type.price == self.outcome_price:
+                total_price += product_type.price * self.outcome_count
+            else:
+                total_price += self.outcome_price * self.outcome_count
+        return total_price
 
     
     
@@ -253,7 +226,7 @@ class Outcome(models.Model):
 
         
     def __str__(self):
-        return f"{self.client.name}, {self.protype.name} - {self.outcome_count}"
+        return f" {self.protype.name} - {self.outcome_count}"
 
 
 class Income(models.Model):
@@ -304,8 +277,8 @@ class ServiceType(models.Model):
         return f"{self.name}"
 
 class Addition_service(models.Model):
-    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    # outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE)
     service_price = models.PositiveBigIntegerField()
     service_date = models.DateTimeField()
