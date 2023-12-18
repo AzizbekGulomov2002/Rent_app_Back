@@ -75,14 +75,16 @@ class ProductViewset(ModelViewSet):
     search_fields = ["name"]
 
 
-class StorageViewset(ModelViewSet):
+class StorageViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Storage.objects.all()
     serializer_class = StorageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = StorageFilter
     search_fields = ["protype"]
-    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
     
 
 
