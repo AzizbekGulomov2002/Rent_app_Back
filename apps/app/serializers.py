@@ -120,7 +120,7 @@ class Addition_serviceSerializer(serializers.ModelSerializer):
     # service_type = ServiceTypeSerializer() 
     class Meta:
         model = Addition_service
-        fields = ["id","client", "service_type", "service_price", "service_date", "desc"]
+        fields = ["id","outcome", "service_type", "service_price", "service_date", "desc"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['service_type'] = ServiceTypeSerializer(instance=instance.service_type).data

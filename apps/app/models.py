@@ -228,7 +228,7 @@ class Outcome(models.Model):
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     # protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
-    protypes = models.ManyToManyField(ProductType)
+    protype = models.ManyToManyField(ProductType)
     outcome_count = models.FloatField()
     outcome_price = models.PositiveBigIntegerField()
     outcome_date = models.DateTimeField()
@@ -250,12 +250,7 @@ class Outcome(models.Model):
         today = datetime.now(self.outcome_date.tzinfo)
         days_difference = (today - self.outcome_date).days
         return days_difference
-    # @property
-    # def daily_debt(self):
-    #     total_incomes_sum = Income.objects.filter(client=self.client, protype=self.protype).aggregate(Sum('income_price'))
-    #     total_incomes_summa = total_incomes_sum['income_price__sum'] if total_incomes_sum['income_price__sum'] else 0
-    #     return (self.total_daily_price - total_incomes_summa)*self.debt_days
-        
+
         
     def __str__(self):
         return f"{self.client.name}, {self.protype.name} - {self.outcome_count}"
@@ -292,13 +287,6 @@ class Income(models.Model):
 
 
 class Payments(models.Model):
-    # class PayType(models.TextChoices):
-    #     MAXSUS = "Maxsus to'lov", "Maxsus to'lov"
-    #     TOLIQ = "To'liq yopish", "To'liq yopish"
-
-    # pay_type = models.CharField(
-    #     max_length=30, choices=PayType.choices, null=True, blank=True
-    # )
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     # product = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     payment_summa = models.FloatField()
