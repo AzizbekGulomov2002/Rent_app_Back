@@ -40,14 +40,15 @@ class ProductType(models.Model):
     
     @property
     def current_storage_count(self):
-        outcomes = Outcome.objects.filter(protype=self)
-        incomes = Income.objects.filter(outcome__protype=self)
+        total_outcome_count = sum(outcome.outcome_count for outcome in self.outcome_set.all())
+        total_income_count = sum(income.income_count for income in Income.objects.filter(outcome__protype=self))
 
-        total_outcome_count = sum(outcome.outcome_count for outcome in outcomes)
-        total_income_count = sum(income.income_count for income in incomes)
+        total_storage_count = self.total_storage_count
+        if total_storage_count is None:
+            total_storage_count = 0
 
-        # return total_outcome_count - total_income_count
-        return self.total_storage_count-(total_outcome_count - total_income_count)
+        return total_storage_count - (total_outcome_count - total_income_count)
+
     
     def __str__(self):
         return f"{self.name}"
