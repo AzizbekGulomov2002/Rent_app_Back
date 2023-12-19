@@ -11,15 +11,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ["id", "name"]
 
-class ProTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductType
-        fields = ["id", "name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['product'] = ProductSerializer(instance=instance.product).data
-        representation['format'] = FormatSerializer(instance=instance.format).data
-        return representation
+
     
     
 
@@ -38,18 +30,30 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ["id", "name", "passport", "phone","tranzactions", "desc","status"]
+        
+
+class ProTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductType
+        fields = ["id", "name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['product'] = ProductSerializer(instance=instance.product).data
+        representation['format'] = FormatSerializer(instance=instance.format).data
+        return representation
 
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     income_count = serializers.SerializerMethodField()
     difference = serializers.SerializerMethodField()
+    protype = ProTypeSerializer(many=True) 
 
     class Meta:
         model = Outcome
         fields = [
             "id",
             "client",
-            "protype",
+            "protype",  
             "outcome_price_type",
             "outcome_count",
             "outcome_price",
@@ -58,7 +62,6 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "difference",
             "total_daily_price",
             "debt_days",
-            # "daily_debt",
         ]
 
     def get_protype_representation(self, protype_instance):
