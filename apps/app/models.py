@@ -199,7 +199,6 @@ class Outcome(models.Model):
     )
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    # protype = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     protype = models.ManyToManyField(ProductType)
     outcome_count = models.FloatField()
     outcome_price = models.PositiveBigIntegerField()
@@ -214,8 +213,22 @@ class Outcome(models.Model):
             else:
                 total_price += self.outcome_price * self.outcome_count
         return total_price
-
     
+    def formatted_outcomes_array(self):
+        formatted_outcomes = []
+        for product_type in self.protype.all():
+            formatted_outcome = {
+                "protype": {
+                    "id": product_type.id,
+                    "name": product_type.name,
+                    "price": str(product_type.price),
+                    "format": product_type.format
+                },
+                "outcome_count": str(self.outcome_count),
+                "outcome_price": str(self.outcome_price)
+            }
+            formatted_outcomes.append(formatted_outcome)
+        return formatted_outcomes
     
 
         

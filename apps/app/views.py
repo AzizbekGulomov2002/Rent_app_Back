@@ -10,8 +10,11 @@ from rest_framework import viewsets, filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
 
-
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import status
 
 class BasePagination(PageNumberPagination):
     page_size = 10
@@ -102,13 +105,28 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         return queryset
 
 
-class OutcomeViewset(ModelViewSet):
-    queryset = Outcome.objects.all().order_by("-id")
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ("client","outcome_count", "outcome_price", "outcome_date")
-    filterset_class = OutcomeFilter
-    serializer_class = OutcomeSerializer
+
+# class OutcomeViewset(viewsets.ModelViewSet):
+#     queryset = Outcome.objects.all().order_by("-id")
+#     # permission_classes = [IsAuthenticatedOrReadOnly]
+#     filter_backends = [DjangoFilterBackend, SearchFilter]
+#     search_fields = ("client", "outcome_count", "outcome_price", "outcome_date")
+#     filterset_class = OutcomeFilter
+#     serializer_class = OutcomeSerializer
+
+
+class OutcomeAPIView(APIView):
+    def get(self, request):
+        queryset = Outcome.objects.all().order_by("-id")
+        serializer = OutcomeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = OutcomeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
