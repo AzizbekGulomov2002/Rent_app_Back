@@ -116,6 +116,7 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 
 
 class OutcomeAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     def get(self, request):
         queryset = Outcome.objects.all().order_by("-id")
         serializer = OutcomeSerializer(queryset, many=True)
