@@ -23,7 +23,7 @@ router.register("storages", StorageViewset, basename="storages")
 
 router.register("products", ProductViewset, basename="product")
 router.register("clients", ClientViewset, basename="client")
-# router.register("outcomes", OutcomeViewset, basename="outcome")
+router.register("outcomes", OutcomeViewset, basename="outcome")
 
 router.register("incomes", IncomeViewset, basename="income")
 router.register("payments", PaymentsViewset, basename="payments")
@@ -39,7 +39,7 @@ urlpatterns = [
     path("auth-token", obtain_auth_token, name="api_token_auth"),
     path("users/me", UserMeView.as_view()),
 
-    path('outcomes', OutcomeAPIView.as_view(), name='outcomes'),
+    # path('outcomes', OutcomeAPIView.as_view(), name='outcomes'),
     # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
