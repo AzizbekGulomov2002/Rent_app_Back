@@ -67,9 +67,9 @@ class OutcomeSerializer(serializers.ModelSerializer):
     def get_protype_representation(self, protype_instance):
         return {
             "id": protype_instance.id,
-            "name": protype_instance.name,
-            "price": protype_instance.price,
-            "format": protype_instance.format.name
+            # "name": protype_instance.name,
+            "protype_price": protype_instance.price,
+            # "format": protype_instance.format.name
         }
 
     def to_representation(self, instance):
