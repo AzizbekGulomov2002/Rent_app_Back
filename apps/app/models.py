@@ -198,7 +198,7 @@ class Outcome(models.Model):
         ('Chegirmada', 'Chegirmada'),
     )
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
     
     
     protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
