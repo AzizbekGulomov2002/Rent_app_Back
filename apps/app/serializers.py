@@ -46,7 +46,9 @@ class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     income_count = serializers.SerializerMethodField()
     difference = serializers.SerializerMethodField()
-    protype = ProTypeSerializer(many=True) 
+    # protype = ProTypeSerializer(many=True) 
+    count = serializers.JSONField()
+    price = serializers.JSONField()
 
     class Meta:
         model = Outcome
@@ -55,8 +57,10 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "client",
             "protype",  
             "outcome_price_type",
-            "outcome_count",
-            "outcome_price",
+            
+            "count",
+            "price",
+            
             "outcome_date",
             "income_count",
             "difference",
