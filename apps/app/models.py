@@ -40,7 +40,7 @@ class ProductType(models.Model):
     
     @property
     def current_storage_count(self):
-        total_outcome_count = sum(outcome.outcome_count for outcome in self.outcome_set.all())
+        total_outcome_count = sum(outcome.count for outcome in self.outcome_set.all())
         total_income_count = sum(income.income_count for income in Income.objects.filter(outcome__protype=self))
 
         total_storage_count = self.total_storage_count
@@ -89,7 +89,7 @@ class Client(models.Model):
 
         for outcome in outcomes:
             total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
-            difference = outcome.outcome_count - total_income_count
+            difference = outcome.count - total_income_count
             outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
 
             total_incomes_summa = sum(income.income_summa for income in incomes)
@@ -111,9 +111,9 @@ class Client(models.Model):
                 "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": protype_data,
                 "outcome_price_type": outcome.outcome_price_type,
-                "outcome_count": outcome.outcome_count,
+                "outcome_count": outcome.count,
                 "total_daily_price": outcome.total_daily_price,
-                "outcome_price": outcome.outcome_price,
+                "outcome_price": outcome.price,
                 "total_income_summa": total_incomes_summa,
                 "income_count": total_income_count,
                 "difference": difference,
@@ -130,8 +130,8 @@ class Client(models.Model):
                 "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "protype": related_outcome.protype.name,
                 "outcome_price_type": related_outcome.outcome_price_type,
-                "outcome_count": related_outcome.outcome_count,
-                "outcome_price": related_outcome.outcome_price,
+                "outcome_count": related_outcome.count,
+                "outcome_price": related_outcome.price,
                 "total_daily_price": related_outcome.total_daily_price,
                 "protype": {
                     "id": related_outcome.protype.id,
@@ -210,10 +210,10 @@ class Outcome(models.Model):
     def total_daily_price(self):
         total_price = 0
         for product_type in self.protype.all():
-            if product_type.price == self.outcome_price:
-                total_price += product_type.price * self.outcome_count
+            if product_type.price == self.price:
+                total_price += product_type.price * self.count
             else:
-                total_price += self.outcome_price * self.outcome_count
+                total_price += self.price * self.count
         return total_price
     
     # def formatted_outcomes_array(self):
