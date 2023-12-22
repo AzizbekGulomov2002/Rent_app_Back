@@ -243,7 +243,7 @@ class Outcome(models.Model):
 
         
     def __str__(self):
-        return f" {self.protype.name} - {self.outcome_count}"
+        return f" {self.protype.name} - {self.count}"
 
 
 class Income(models.Model):
