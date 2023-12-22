@@ -265,9 +265,9 @@ class Income(models.Model):
     @property
     def income_summa(self):
         if self.outcome.outcome_price_type == "Narxida":
-            return self.outcome.outcome_price * self.day * self.income_count
+            return self.outcome.price * self.day * self.income_count
         elif self.outcome.outcome_price_type == "Chegirmada":
-            return self.outcome.outcome_price * self.day * self.income_count  # Change this to self.income.income_price if needed
+            return self.outcome.price * self.day * self.income_count  # Change this to self.income.income_price if needed
         else:
             return 0  # Or handle other cases as needed
 
