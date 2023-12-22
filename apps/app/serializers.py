@@ -54,7 +54,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
         model = Outcome
         fields = [
             "id",
-            "client",
+            # "client",
             "protype",  
             "outcome_price_type",
             
