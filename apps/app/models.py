@@ -308,18 +308,3 @@ class Addition_service(models.Model):
 
 
 
-
-
-
-
-
-class ProductType(models.Model):
-    name = models.CharField(max_length=200)
-    format = models.ForeignKey(Format, on_delete=models.CASCADE)
-    price = models.FloatField()
-
-class Outcome(models.Model):
-    protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
-    count = models.CharField(max_length=1000)
-    price = models.CharField(max_length=1000)
-    outcome_date = models.DateTimeField()
