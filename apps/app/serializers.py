@@ -47,14 +47,12 @@ class OutcomeSerializer(serializers.ModelSerializer):
     income_count = serializers.SerializerMethodField()
     difference = serializers.SerializerMethodField()
     # protype = ProTypeSerializer(many=True) 
-    count = serializers.JSONField()
-    price = serializers.JSONField()
 
     class Meta:
         model = Outcome
         fields = [
             "id",
-            # "client",
+            "client",
             "protype",  
             "outcome_price_type",
             

@@ -198,7 +198,7 @@ class Outcome(models.Model):
         ('Chegirmada', 'Chegirmada'),
     )
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
-    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     
     
     protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
@@ -305,3 +305,21 @@ class Addition_service(models.Model):
     def __str__(self):
         return f"{self.service_type.name} - {self.service_price}"
     
+
+
+
+
+
+
+
+
+class ProductType(models.Model):
+    name = models.CharField(max_length=200)
+    format = models.ForeignKey(Format, on_delete=models.CASCADE)
+    price = models.FloatField()
+
+class Outcome(models.Model):
+    protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
+    count = models.CharField(max_length=1000)
+    price = models.CharField(max_length=1000)
+    outcome_date = models.DateTimeField()
