@@ -21,8 +21,10 @@ from rest_framework import generics, views
 
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
+from django.contrib.auth.models import Permission
 
 from .serializers import (
+    PermissionsSerializer,
     UserMeSerializer,
     DirectorSerializer,
     ManagerSerializer,
@@ -30,6 +32,12 @@ from .serializers import (
     LoginSerializer,
 )
 
+
+
+class PermissionsListView(generics.ListAPIView):
+    serializer_class = PermissionsSerializer
+    # permission_classes = [AllowAny]
+    queryset = Permission.objects.all()
 
 class UserMeView(generics.RetrieveAPIView):
     serializer_class = UserMeSerializer

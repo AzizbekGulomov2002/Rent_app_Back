@@ -2,10 +2,16 @@ from rest_framework import serializers, exceptions, status
 from .models import *
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
+from django.contrib.auth.models import Permission
+
+class PermissionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = "all"
+        
+        
 class UserMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
