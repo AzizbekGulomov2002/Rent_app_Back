@@ -32,15 +32,9 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "passport", "phone","tranzactions", "desc","status"]
         
 
-class ProTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductType
-        fields = ["id", "name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['product'] = ProductSerializer(instance=instance.product).data
-        representation['format'] = FormatSerializer(instance=instance.format).data
-        return representation
+
+
+
 
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
@@ -56,6 +50,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "protype",  
             "outcome_price_type",
             
+            "products_data",
             "count",
             "price",
             
@@ -63,7 +58,7 @@ class OutcomeSerializer(serializers.ModelSerializer):
             "income_count",
             "difference",
             "total_daily_price",
-            "debt_days",
+            # "debt_days",
         ]
 
     def get_protype_representation(self, protype_instance):
@@ -74,14 +69,15 @@ class OutcomeSerializer(serializers.ModelSerializer):
             # "format": protype_instance.format.name
         }
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        protype_instances = instance.protype.all()
-        protype_representation = [
-            self.get_protype_representation(protype_instance) for protype_instance in protype_instances
-        ]
-        representation['protype'] = protype_representation
-        return representation
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     protype_instances = instance.protype.all()
+
+    #     protype_representation = [
+    #         self.get_protype_representation(protype_instance) for protype_instance in protype_instances
+    #     ]
+    #     representation['protype'] = protype_representation
+    #     return representation
 
     def get_income_count(self, instance):
         incomes = Income.objects.filter(outcome=instance)
@@ -91,8 +87,25 @@ class OutcomeSerializer(serializers.ModelSerializer):
     def get_difference(self, instance):
         incomes = Income.objects.filter(outcome=instance)
         total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
-        return instance.outcome_count - total_income_count
+        
+        # Ensure 'instance.count' is converted to an integer before subtraction
+        instance_count = int(instance.count) if instance.count else 0
+        
+        return instance_count - total_income_count
 
+
+
+
+class ProTypeSerializer(serializers.ModelSerializer):
+    outcomes = OutcomeSerializer(many=True)
+    class Meta:
+        model = ProductType
+        fields = ["id", "outcomes","name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['product'] = ProductSerializer(instance=instance.product).data
+        representation['format'] = FormatSerializer(instance=instance.format).data
+        return representation
 
 
 class IncomeSerializer(serializers.ModelSerializer):

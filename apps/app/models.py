@@ -192,6 +192,43 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.name} | {self.status}"
 
+# class Outcome(models.Model):
+#     PRICE_TYPE_CHOICES = (
+#         ('Narxida', 'Narxida'),
+#         ('Chegirmada', 'Chegirmada'),
+#     )
+#     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
+#     client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    
+    
+#     protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
+#     count = models.CharField(max_length=1000)
+#     price = models.CharField(max_length=1000)
+#     outcome_date = models.DateTimeField()
+    
+
+
+#     @property
+#     def total_daily_price(self):
+#         total_price = 0
+#         for product_type in self.protype.all():
+#             if product_type.price == self.price:
+#                 total_price += product_type.price * self.count
+#             else:
+#                 total_price += self.price * self.count
+#         return total_price
+      
+#     @property
+#     def debt_days(self):
+#         today = datetime.now(self.outcome_date.tzinfo)
+#         days_difference = (today - self.outcome_date).days
+#         return days_difference
+
+        
+#     def __str__(self):
+#         return f" {self.protype.name} - {self.count}"
+
+
 class Outcome(models.Model):
     PRICE_TYPE_CHOICES = (
         ('Narxida', 'Narxida'),
@@ -199,52 +236,22 @@ class Outcome(models.Model):
     )
     outcome_price_type = models.CharField(max_length=20, choices=PRICE_TYPE_CHOICES)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    
-    
-    protype = models.ForeignKey(ProductType,on_delete=models.CASCADE)
+
+    protype = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='product_types')
     count = models.CharField(max_length=1000)
     price = models.CharField(max_length=1000)
     outcome_date = models.DateTimeField()
+    products_data = models.JSONField()
 
     @property
     def total_daily_price(self):
         total_price = 0
-        for product_type in self.protype.all():
+        for product_type in self.protype.product_types.all():
             if product_type.price == self.price:
-                total_price += product_type.price * self.count
+                total_price += int(product_type.price) * int(self.count)
             else:
                 total_price += self.price * self.count
         return total_price
-    
-    # def formatted_outcomes_array(self):
-    #     formatted_outcomes = []
-    #     for product_type in self.protype.all():
-    #         formatted_outcome = {
-    #             "protype": {
-    #                 "id": product_type.id,
-    #                 # "name": product_type.name,
-    #                 "protype_price": str(product_type.price),
-    #                 "format": product_type.format
-    #             },
-    #             "outcome_count": str(self.outcome_count),
-    #             "outcome_price": str(self.outcome_price),
-    #             "outcome_date": (self.outcome_date),
-    #         }
-    #         formatted_outcomes.append(formatted_outcome)
-    #     return formatted_outcomes
-    
-
-        
-    @property
-    def debt_days(self):
-        today = datetime.now(self.outcome_date.tzinfo)
-        days_difference = (today - self.outcome_date).days
-        return days_difference
-
-        
-    def __str__(self):
-        return f" {self.protype.name} - {self.count}"
-
 
 class Income(models.Model):
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
@@ -274,6 +281,30 @@ class Income(models.Model):
     
     def __str__(self):
         return f"{self.outcome.client.name} - {self.income_count}"
+
+
+# class Income(models.Model):
+#     RETURN_CHOICES = (
+#         ('Hammasini qaytarish', 'Hammasini qaytarish'),
+#         ('Qaytarish', 'Qaytarish'),
+#     )
+#     income_type = models.CharField(max_length=20, choices=RETURN_CHOICES)
+#     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
+#     income_count = models.PositiveBigIntegerField()
+#     day = models.IntegerField()
+#     income_date = models.DateTimeField()
+
+#     def calculate_difference(self):
+#         if self.income_type == 'Hammasini qaytarish':
+#             outcome_count = int(self.outcome.count)
+#             total_outcome_count = Outcome.objects.filter(protype=self.outcome.protype).aggregate(total=Sum('count'))['total'] or 0
+#             difference = outcome_count - total_outcome_count
+#             return difference
+#         elif self.income_type == 'Qaytarish':
+#             # Perform other calculations if needed for this case
+#             return 0  # Placeholder, handle this case as required
+#         else:
+#             return 0
 
 
 class Payments(models.Model):
