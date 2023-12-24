@@ -242,8 +242,8 @@ class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='product_types')
-    count = models.IntegerField(max_length=1000)
-    price = models.IntegerField(max_length=1000)
+    count = models.IntegerField()
+    price = models.IntegerField()
     outcome_date = models.DateTimeField()
     
     
