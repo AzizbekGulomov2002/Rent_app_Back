@@ -249,6 +249,9 @@ class Outcome(models.Model):
     
     
     
+    
+    
+    
     # products_data = models.JSONField()
 
     # @property
