@@ -32,16 +32,7 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "passport", "phone", "desc"]
         
 
-class ProTypeSerializer(serializers.ModelSerializer):
-    outcomes = OutcomeSerializer(many=True)
-    class Meta:
-        model = ProductType
-        fields = ["id", "outcomes","name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['product'] = ProductSerializer(instance=instance.product).data
-        representation['format'] = FormatSerializer(instance=instance.format).data
-        return representation
+
 
 class OutcomePostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -111,7 +102,16 @@ class OutcomeSerializer(serializers.ModelSerializer):
 
 
 
-
+class ProTypeSerializer(serializers.ModelSerializer):
+    outcomes = OutcomeSerializer(many=True)
+    class Meta:
+        model = ProductType
+        fields = ["id", "outcomes","name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['product'] = ProductSerializer(instance=instance.product).data
+        representation['format'] = FormatSerializer(instance=instance.format).data
+        return representation
 
 
 

@@ -76,107 +76,107 @@ class Client(models.Model):
     phone = models.CharField(max_length=13)
     desc = models.TextField(null=True, blank=True)
     
-    # @property
-    # def tranzactions(self):
-    #     outcomes = Outcome.objects.filter(client=self).order_by('-id')
-    #     incomes = Income.objects.filter(outcome__client=self).order_by('-id')
-    #     payments = Payments.objects.filter(client=self).order_by('-id')
-    #     additional_services = Addition_service.objects.filter(client=self)
+    @property
+    def tranzactions(self):
+        outcomes = Outcome.objects.filter(client=self).order_by('-id')
+        incomes = Income.objects.filter(outcome__client=self).order_by('-id')
+        payments = Payments.objects.filter(client=self).order_by('-id')
+        additional_services = Addition_service.objects.filter(client=self)
 
-    #     outcome_data = []
-    #     income_data = []
-    #     payments_data = []
+        outcome_data = []
+        income_data = []
+        payments_data = []
 
-    #     for outcome in outcomes:
-    #         total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
-    #         # Convert outcome.count to an integer before subtraction
-    #         outcome_count = int(outcome.count) if outcome.count else 0
-    #         difference = outcome_count - total_income_count  # Ensure both values are integers
-    #         outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
+        for outcome in outcomes:
+            total_income_count = incomes.filter(outcome=outcome).aggregate(total=Sum('income_count'))['total'] or 0
+            # Convert outcome.count to an integer before subtraction
+            outcome_count = int(outcome.count) if outcome.count else 0
+            difference = outcome_count - total_income_count  # Ensure both values are integers
+            outcome_date = outcome.outcome_date.astimezone(timezone.get_current_timezone())
 
-    #         total_incomes_summa = sum(income.income_summa for income in incomes)
-    #         today = datetime.now(outcome.outcome_date.tzinfo)
-    #         days_difference = (today - outcome.outcome_date).days
-    #         daily_debt = (outcome.total_daily_price - total_incomes_summa) * days_difference if days_difference > 0 else 0
+            total_incomes_summa = sum(income.income_summa for income in incomes)
+            today = datetime.now(outcome.outcome_date.tzinfo)
+            days_difference = (today - outcome.outcome_date).days
+            daily_debt = (outcome.total_daily_price - total_incomes_summa) * days_difference if days_difference > 0 else 0
 
-    #         protype_data = []
-    #         for protype_instance in outcome.protype.all():
-    #             protype_data.append({
-    #                 "id": protype_instance.id,
-    #                 "name": protype_instance.name,
-    #                 "price": protype_instance.price,
-    #                 "format": protype_instance.format.name
-    #             })
+            protype_data = []
+            for protype_instance in outcome.protype.all():
+                protype_data.append({
+                    "id": protype_instance.id,
+                    "name": protype_instance.name,
+                    "price": protype_instance.price,
+                    "format": protype_instance.format.name
+                })
 
-    #         outcome_data.append({
-    #             "id": outcome.id,
-    #             "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-    #             "protype": protype_data,
-    #             "outcome_price_type": outcome.outcome_price_type,
-    #             "outcome_count": outcome.count,
-    #             "total_daily_price": outcome.total_daily_price,
-    #             "outcome_price": outcome.price,
-    #             "total_income_summa": total_incomes_summa,
-    #             "income_count": total_income_count,
-    #             "difference": difference,
-    #             "daily_debt": daily_debt,
-    #             "debt_days": days_difference,
-    #         })
+            outcome_data.append({
+                "id": outcome.id,
+                "outcome_date": outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "protype": protype_data,
+                "outcome_price_type": outcome.outcome_price_type,
+                "outcome_count": outcome.count,
+                "total_daily_price": outcome.total_daily_price,
+                "outcome_price": outcome.price,
+                "total_income_summa": total_incomes_summa,
+                "income_count": total_income_count,
+                "difference": difference,
+                "daily_debt": daily_debt,
+                "debt_days": days_difference,
+            })
 
-    #     for income in incomes:
-    #         related_outcome = Outcome.objects.get(id=income.outcome_id)
-    #         related_outcome_date = related_outcome.outcome_date.astimezone(timezone.get_current_timezone())
+        for income in incomes:
+            related_outcome = Outcome.objects.get(id=income.outcome_id)
+            related_outcome_date = related_outcome.outcome_date.astimezone(timezone.get_current_timezone())
 
-    #         outcome_info = {
-    #             "id": related_outcome.id,
-    #             "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-    #             "protype": related_outcome.protype.name,
-    #             "outcome_price_type": related_outcome.outcome_price_type,
-    #             "outcome_count": related_outcome.count,
-    #             "outcome_price": related_outcome.price,
-    #             "total_daily_price": related_outcome.total_daily_price,
-    #             "protype": {
-    #                 "id": related_outcome.protype.id,
-    #                 "name": related_outcome.protype.name,
-    #                 "price": related_outcome.protype.price,
-    #                 "format": related_outcome.protype.format.name
-    #             }
-    #         }
+            outcome_info = {
+                "id": related_outcome.id,
+                "outcome_date": related_outcome_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "protype": related_outcome.protype.name,
+                "outcome_price_type": related_outcome.outcome_price_type,
+                "outcome_count": related_outcome.count,
+                "outcome_price": related_outcome.price,
+                "total_daily_price": related_outcome.total_daily_price,
+                "protype": {
+                    "id": related_outcome.protype.id,
+                    "name": related_outcome.protype.name,
+                    "price": related_outcome.protype.price,
+                    "format": related_outcome.protype.format.name
+                }
+            }
 
-    #         income_date = income.income_date.astimezone(timezone.get_current_timezone())
+            income_date = income.income_date.astimezone(timezone.get_current_timezone())
 
-    #         income_data.append({
-    #             "id": income.id,
-    #             "income_date": income_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
-    #             "day": income.day,
-    #             "income_count": income.income_count,
-    #             "income_summa": income.income_summa,
-    #             "outcome": outcome_info
-    #         })
+            income_data.append({
+                "id": income.id,
+                "income_date": income_date.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "day": income.day,
+                "income_count": income.income_count,
+                "income_summa": income.income_summa,
+                "outcome": outcome_info
+            })
 
-    #     for payment in payments:
-    #         payments_data.append({
-    #             "id": payment.id,
-    #             "payment_summa": payment.payment_summa,
-    #             "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
-    #             "desc": payment.desc,
-    #         })
+        for payment in payments:
+            payments_data.append({
+                "id": payment.id,
+                "payment_summa": payment.payment_summa,
+                "payment_date": payment.payment_date.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "desc": payment.desc,
+            })
 
-    #     total_payment = sum(payment.payment_summa for payment in payments)
-    #     total_incomes_summa = sum(income.income_summa for income in incomes)
-    #     debt = total_incomes_summa - total_payment
-    #     total_service_price = sum(service.service_price for service in additional_services)
+        total_payment = sum(payment.payment_summa for payment in payments)
+        total_incomes_summa = sum(income.income_summa for income in incomes)
+        debt = total_incomes_summa - total_payment
+        total_service_price = sum(service.service_price for service in additional_services)
 
-    #     return {
-    #         "outcome_data": outcome_data,
-    #         "income_data": income_data,
-    #         "payments_data": payments_data,
-    #         "total_payment": total_payment,
-    #         "debt": debt,
-    #         'total_incomes_summa': total_incomes_summa,
-    #         "additional_services_data": list(additional_services.values()),  # Convert to list if necessary
-    #         "total_service_price": total_service_price
-    #     }
+        return {
+            "outcome_data": outcome_data,
+            "income_data": income_data,
+            "payments_data": payments_data,
+            "total_payment": total_payment,
+            "debt": debt,
+            'total_incomes_summa': total_incomes_summa,
+            "additional_services_data": list(additional_services.values()),  # Convert to list if necessary
+            "total_service_price": total_service_price
+        }
 
         
         
@@ -242,8 +242,8 @@ class Outcome(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     protype = models.ForeignKey(ProductType, on_delete=models.CASCADE, related_name='product_types')
-    count = models.CharField(max_length=1000)
-    price = models.CharField(max_length=1000)
+    count = models.IntegerField(max_length=1000)
+    price = models.IntegerField(max_length=1000)
     outcome_date = models.DateTimeField()
     
     
