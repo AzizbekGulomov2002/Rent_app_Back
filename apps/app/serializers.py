@@ -32,8 +32,6 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "passport", "phone", "desc"]
         
 
-
-
 class OutcomePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Outcome
@@ -99,6 +97,26 @@ class OutcomeSerializer(serializers.ModelSerializer):
         # Ensure 'instance.count' is converted to an integer before subtraction
         instance_count = int(instance.count) if instance.count else 0
         return instance_count - total_income_count
+
+
+class OutcomePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Outcome
+        fields = [
+            "protype",
+            "outcome_price_type",
+            "count",
+            "price",
+        ]
+
+
+class OutcomeBulkCreateSerializer(serializers.Serializer):
+    client = serializers.IntegerField(required=True, write_only=True)
+    outcome_date = serializers.DateTimeField(required=True)
+    protypes = OutcomePostSerializer(many=True, write_only=True)
+
+
+
 
 
 
