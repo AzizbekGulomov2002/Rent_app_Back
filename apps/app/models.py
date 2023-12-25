@@ -136,7 +136,7 @@ class Client(models.Model):
                 "income_count": total_income_count,
                 "difference": difference,
                 "protype": protype,
-                "daily_debt": daily_debt,
+                # "daily_debt": daily_debt,
                 "debt_days": days_difference,
             })
 
