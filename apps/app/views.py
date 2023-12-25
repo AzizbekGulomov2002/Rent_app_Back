@@ -123,7 +123,6 @@ class OutcomeViewset(viewsets.ModelViewSet):
     search_fields = ("client", "outcome_count", "outcome_price", "outcome_date")
     filterset_class = OutcomeFilter
     serializer_class = OutcomeSerializer
-
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return OutcomeBulkCreateSerializer
