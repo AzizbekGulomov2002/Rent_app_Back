@@ -108,11 +108,10 @@ class Client(models.Model):
                 daily_debt = daily_debt
                 # daily_debt = outcome.total_daily_price - total_incomes_summa
                 # daily_debt = outcome.total_daily_price
-                1
+
             else:
                 daily_debt=daily_debt
                 # daily_debt = (outcome.total_daily_price - total_incomes_summa) * days_difference
-                1
 
                 
                 
