@@ -16,6 +16,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 
+
+# Pagination class
+
 class BasePagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
@@ -34,10 +37,13 @@ class BasePagination(PageNumberPagination):
 class CustomPaginationMixin:
     pagination_class = BasePagination
 
+
+# Product Type class
+    
+
 class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = ProductType.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    # filterset_fields = ('price', 'name','format')
     queryset = ProductType.objects.all()
     serializer_class = ProTypeSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
@@ -47,6 +53,8 @@ class ProTypeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
         return queryset
 
+# Products out of the paginations class
+    
 class AllProTypeViewset(ModelViewSet):
     queryset = ProductType.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -55,10 +63,11 @@ class AllProTypeViewset(ModelViewSet):
     filterset_class = ProductTypeFilter 
     search_fields = ['name', 'format']
     filterset_fields = ('price', 'name', 'format')
-    ordering_fields = ('price', 'name', 'format')  # Specify fields for sorting/ordering
-    ordering = ('price',)  # Initial default ordering
+    ordering_fields = ('price', 'name', 'format')  
+    ordering = ('price',)
 
 
+# Formats for Products class
 
 class FormatViewset(ModelViewSet):
     queryset = Format.objects.all().order_by("-id")
@@ -69,6 +78,8 @@ class FormatViewset(ModelViewSet):
     search_fields = ["name"]
 
 
+# Products class
+    
 class ProductViewset(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -77,6 +88,9 @@ class ProductViewset(ModelViewSet):
     filterset_class = ProductFilter
     search_fields = ["name"]
 
+
+# Storage for Products class
+    
 
 class StorageViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Storage.objects.all()
@@ -90,8 +104,8 @@ class StorageViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         return queryset
     
 
-
-
+# Clients class
+    
 class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -104,7 +118,7 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
         return queryset
 
-
+# Outcome Export class
 
 # class OutcomeViewset(viewsets.ModelViewSet):
 #     queryset = Outcome.objects.all().order_by("-id")
@@ -113,7 +127,6 @@ class ClientViewset(CustomPaginationMixin, viewsets.ModelViewSet):
 #     search_fields = ("client", "outcome_count", "outcome_price", "outcome_date")
 #     filterset_class = OutcomeFilter
 #     serializer_class = OutcomeSerializer
-
 
 
 class OutcomeViewset(viewsets.ModelViewSet):
@@ -127,7 +140,6 @@ class OutcomeViewset(viewsets.ModelViewSet):
         if self.request.method == 'POST':
             return OutcomeBulkCreateSerializer
         return OutcomeSerializer
-
     def create(self, request, *args, **kwargs):
         serializer = OutcomeBulkCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -144,6 +156,7 @@ class OutcomeViewset(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Income Import class
 
 class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Income.objects.all().order_by("-id")
@@ -156,6 +169,9 @@ class IncomeViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         queryset = super().get_queryset()
         return queryset
 
+
+
+# Payments class
 
 class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Payments.objects.all().order_by("-id")
@@ -170,30 +186,26 @@ class PaymentsViewset(CustomPaginationMixin, viewsets.ModelViewSet):
         return queryset
 
 
+#  Service Types class
+
 class ServiceTypeViewset(ModelViewSet):
     queryset = ServiceType.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    # search_fields = ("payment_date")  
-    # filterset_class = ServiceTypeFilter
     serializer_class = ServiceTypeSerializer
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
 
 
+# Addition services class
+    
+
 class Addition_serviceViewset(CustomPaginationMixin, viewsets.ModelViewSet):
     queryset = Addition_service.objects.all().order_by("-id")
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    # search_fields = ("payment_date")
-    # filterset_class = Addition_serviceFilter
     serializer_class = Addition_serviceSerializer
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
-
-
-
-
-

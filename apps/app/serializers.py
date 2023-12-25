@@ -12,9 +12,6 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
-    
-    
-
 class StorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Storage
@@ -22,14 +19,13 @@ class StorageSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['protype'] = ProTypeSerializer(instance=instance.protype).data
-        # representation['format'] = FormatSerializer(instance=instance.format).data
         return representation
 
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ["id", "name", "passport", "phone", "desc"]
+        fields = ["id", "name", "passport", "phone","tranzactions", "desc","status"]
         
 
 class OutcomePostSerializer(serializers.ModelSerializer):
@@ -38,11 +34,9 @@ class OutcomePostSerializer(serializers.ModelSerializer):
         fields = [
             "protype",
             "outcome_price_type",
-            "count",
-            "price",
+            "outcome_count",
+            "outcome_price",
         ]
-
-
 class OutcomeBulkCreateSerializer(serializers.Serializer):
     client = serializers.IntegerField(required=True, write_only=True)
     outcome_date = serializers.DateTimeField(required=True)
@@ -52,40 +46,26 @@ class OutcomeBulkCreateSerializer(serializers.Serializer):
 class OutcomeSerializer(serializers.ModelSerializer):
     outcome_date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
     income_count = serializers.SerializerMethodField()
-    difference = serializers.SerializerMethodField()
+    difference = serializers.SerializerMethodField() 
     class Meta:
         model = Outcome
         fields = [
             "id",
             "client",
             "protype",  
-            "outcome_price_type",
-            "count",
-            "price",
+            "outcome_price_type",     
+            "outcome_count",
+            "outcome_price",  
             "outcome_date",
             "income_count",
             "difference",
             "total_daily_price",
         ]
-
     def get_protype_representation(self, protype_instance):
         return {
             "id": protype_instance.id,
-            # "name": protype_instance.name,
             "protype_price": protype_instance.price,
-            # "format": protype_instance.format.name
         }
-
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     protype_instances = instance.protype.all()
-
-    #     protype_representation = [
-    #         self.get_protype_representation(protype_instance) for protype_instance in protype_instances
-    #     ]
-    #     representation['protype'] = protype_representation
-    #     return representation
-
     def get_income_count(self, instance):
         incomes = Income.objects.filter(outcome=instance)
         total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
@@ -94,43 +74,21 @@ class OutcomeSerializer(serializers.ModelSerializer):
     def get_difference(self, instance):
         incomes = Income.objects.filter(outcome=instance)
         total_income_count = incomes.aggregate(total=Sum('income_count'))['total'] or 0
-        # Ensure 'instance.count' is converted to an integer before subtraction
-        instance_count = int(instance.count) if instance.count else 0
+        instance_count = int(instance.outcome_count) if instance.outcome_count else 0
         return instance_count - total_income_count
-
-
-class OutcomePostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Outcome
-        fields = [
-            "protype",
-            "outcome_price_type",
-            "count",
-            "price",
-        ]
-
-
-class OutcomeBulkCreateSerializer(serializers.Serializer):
-    client = serializers.IntegerField(required=True, write_only=True)
-    outcome_date = serializers.DateTimeField(required=True)
-    protypes = OutcomePostSerializer(many=True, write_only=True)
-
-
 
 
 
 
 class ProTypeSerializer(serializers.ModelSerializer):
-    outcomes = OutcomeSerializer(many=True)
     class Meta:
         model = ProductType
-        fields = ["id", "outcomes","name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
+        fields = ["id","name","storage_type", "product", "format", "price","total_storage_count","current_storage_count"]
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['product'] = ProductSerializer(instance=instance.product).data
         representation['format'] = FormatSerializer(instance=instance.format).data
         return representation
-
 
 
 class IncomeSerializer(serializers.ModelSerializer):
