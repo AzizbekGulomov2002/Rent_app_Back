@@ -37,6 +37,10 @@ router.register("addition-services", Addition_serviceViewset, basename="addition
 urlpatterns = [
     path("", include(router.urls)),
     path("auth-token", obtain_auth_token, name="api_token_auth"),
+
+    path("permissions",  PermissionsListView.as_view()),
+
+
     path("users/me", UserMeView.as_view()),
 
     # path('outcomes', OutcomeAPIView.as_view(), name='outcomes'),
